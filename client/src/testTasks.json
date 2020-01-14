@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "description": "Eat to survive",
+    "list": "Incomplete"
+  },
+  {
+    "id": 2,
+    "description": "Code to create",
+    "list": "Complete"
+  },
+  {
+    "id": 3,
+    "description": "Sleep to rest",
+    "list": "Incomplete"
+  }
+]
