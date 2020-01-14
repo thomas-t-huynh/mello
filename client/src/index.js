@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import testTasks from "./testTasks";
-import "./css/styles.css";
+import "./css/index.css";
 import Complete from "./components/Complete";
 import Incomplete from "./components/Incomplete";
+import TaskHeader from "./components/TaskHeader";
+import Header from "./components/Header";
 
 class App extends React.Component {
   constructor(props) {
@@ -17,19 +19,23 @@ class App extends React.Component {
 
   setTaskList(taskList) {
     this.setState({ taskList: taskList });
-    this.forceUpdate();
+
   }
   render() {
     return (
       <div className="App">
-        <Incomplete
-          taskList={this.state.taskList}
-          setTaskList={this.setTaskList}
-        />
-        <Complete
-          taskList={this.state.taskList}
-          setTaskList={this.setTaskList}
-        />
+        <Header />
+        <TaskHeader />
+        <div className="App-lists-div">
+          <Incomplete
+            taskList={this.state.taskList}
+            setTaskList={this.setTaskList}
+          />
+          <Complete
+            taskList={this.state.taskList}
+            setTaskList={this.setTaskList}
+          />
+        </div>
       </div>
     );
   }

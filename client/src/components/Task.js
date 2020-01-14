@@ -1,6 +1,6 @@
 import React from "react";
 
-import "../css/styles.css";
+import "../css/index.css";
 
 export const Task = ({ description, id, listTitle, onTaskDrop }) => {
   const onDragStart = (e, id) => {

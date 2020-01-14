@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Task from "./Task";
-import "../css/styles.css";
+import "../css/index.css";
 
 export const TaskList = ({ listTitle, taskList, setTaskList }) => {
   const [list, setList] = useState(

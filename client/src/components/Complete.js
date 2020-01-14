@@ -1,6 +1,6 @@
 import React from "react";
 import TaskList from "./TaskList";
-import "../css/styles.css";
+import "../css/index.css";
 
 export const Complete = ({ taskList, setTaskList }) => {
   return (

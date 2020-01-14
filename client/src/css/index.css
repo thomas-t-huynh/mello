@@ -1,0 +1,78 @@
+html {
+  font-size: 62.5%;
+  background: #53c972;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+p {
+  font-size: 1.6rem;
+}
+li {
+  font-size: 1.6rem;
+}
+h1 {
+  font-size: 3rem;
+}
+h2 {
+  font-size: 2.4rem;
+}
+h3 {
+  font-size: 1.8rem;
+}
+.App {
+  font-family: 'Ubuntu', sans-serif;
+}
+.App .App-lists-div {
+  padding: 0 1rem;
+  text-align: center;
+  display: flex;
+}
+.App .header-div {
+  background: #4aba67;
+  width: 100%;
+  text-align: center;
+}
+.App .header-div h1 {
+  font-family: 'Damion', cursive;
+  color: white;
+  opacity: 0.7;
+  margin: 0 auto;
+}
+.App .taskHeader-div h1 {
+  color: white;
+  margin: 1rem 0 1rem 1rem;
+}
+.App .taskList-div {
+  width: 20rem;
+  background: #EEEEEE;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  height: 100%;
+  margin-right: 1rem;
+}
+.App .taskList-div h2 {
+  font-size: 1.6rem;
+  width: 15rem;
+  text-align: left;
+  border-radius: 0.5rem;
+  color: #333333;
+}
+.App .taskList-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.App .task-div {
+  background: white;
+  width: 20rem;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+  text-align: left;
+  box-shadow: 0.1rem 0.1rem #D8D8D8;
+}
+.App .task-div P {
+  margin-left: 0.5rem;
+  color: #696969;
+}
