@@ -1,21 +1,31 @@
 import React from "react";
-
+import Draggable from "./Draggable";
 import "../css/index.css";
 
 export const Task = ({ description, id, listTitle, onTaskDrop }) => {
-  const onDragStart = (e, id) => {
-    e.dataTransfer.setData("id", id);
+  
+  const onDragStart = () => {
+    let e = new DataTransfer()
+    console.log(e)
+    e["effectAllowed"] = "uninitialized"
+    e.setData("id", id)
+    
   };
 
   return (
-    <div
-      onDragStart={e => onDragStart(e, id)}
+    <Draggable
+      onDragStart={onDragStart}
       draggable
-      className="task-div"
-      onDragEnd={e => onTaskDrop()}
     >
-      <p>{description}</p>
-    </div>
+      <div
+        
+
+        className="task-div"
+        onDragEnd={e => onTaskDrop()}
+      >
+        <p>{description}</p>
+      </div>
+    </Draggable>
   );
 };
 

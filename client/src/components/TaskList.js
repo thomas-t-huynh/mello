@@ -12,7 +12,8 @@ export const TaskList = ({ listTitle, taskList, setTaskList }) => {
   const onTaskDrop = () => {
     setList(taskList.filter(task => task.list === listTitle));
   };
-  const onDrop = (e, info) => {
+  const onDrop = (e) => {
+    console.log(e)
     let index = taskList.findIndex(
       task => task.id === parseInt(e.dataTransfer.getData("id"))
     );
@@ -27,7 +28,7 @@ export const TaskList = ({ listTitle, taskList, setTaskList }) => {
     <div
       onDragOver={e => onDragOver(e)}
       className="taskList-div"
-      onDrop={e => onDrop(e, "done")}
+      onDrop={e => onDrop(e)}
     >
       <h2>{listTitle}</h2>
       <div className="taskList-list">
