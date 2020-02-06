@@ -2,6 +2,7 @@ const express = require('express')
 const router = new express.Router()
 const auth = require('../middleware/auth')
 const Board = require('../models/board')
+const mongoose = require('mongoose')
 
 router.post('/boards', auth, async (req, res) => {
     const board = new Board({
@@ -19,27 +20,25 @@ router.post('/boards', auth, async (req, res) => {
 
 router.patch('/boards/:id', auth, async (req, res) => {
     const _id = req.params.id;
-    const updates = Object.keys(req.body)
-    const allowedUpdates = ['users', 'owner', 'columnIds']
-    const isValidOperation = updates.every((update) => {
-        return allowedUpdates.includes((update))
-    })
+    const update = Object.keys(req.body)[0]
+    const allowedUpdates = ['users', 'owner', 'columns']
+    const isValidOperation = allowedUpdates.includes(update)
     if (!isValidOperation) {
         return res.status(400).send({ error: 'Invalid update' })
     }
-    if (updates[0] === 'users') {
-        req.body.users = req.body.users.split(",") 
-    }
     try {
-        const board = await Board.findOne({ _id: req.params.id })
-        
-        
-        // const task = await Task.findByIdAndUpdate(_id, req.body,{ new: true })
+        const board = await Board.findOne({ _id: _id })
+
         if (!board) {
             return res.status(404).send()
         }
-        
-        updates.forEach((update) => board[update] = req.body[update])
+        if (update === 'users') {
+            board[update].push({ userID: req.body.users})
+        } else if (update === 'columns') {
+            board[update].push({ columnID: req.body.columns})
+        } else {
+            board[update] = req.body.owner
+        }
         
         await board.save()
         res.send(board)

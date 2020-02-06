@@ -11,8 +11,8 @@ const boardSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    columnIds: [{
-      task: {
+    columns: [{
+      columnID: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Column'
       }  
@@ -21,6 +21,7 @@ const boardSchema = new mongoose.Schema({
         userID: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
+            ref: 'User'
         }
     }]
 }, {
