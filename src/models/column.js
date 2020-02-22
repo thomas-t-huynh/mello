@@ -8,15 +8,20 @@ const columnSchema = new mongoose.Schema({
 
     },
     taskIds: [{
-      task: {
+      taskId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Column'
+          ref: 'Task'
       }  
     }]
 }, {
     timestamps: true
 })
 
+columnSchema.virtual('board', {
+    ref: 'Board',
+    localField: '_id',
+    foreignField: 'columns'
+})
 
 const Column = mongoose.model('Column', columnSchema);
 

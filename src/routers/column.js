@@ -2,16 +2,44 @@ const express = require('express')
 const router = new express.Router()
 const auth = require('../middleware/auth')
 const Column = require('../models/column')
-const mongoose = require('mongoose')
+const Board = require('../models/board')
 
-router.post('/columns', auth, async (req, res) => {
+
+router.post('/boards/:boardId/columns', auth, async (req, res) => {
+    const _id = req.params.boardId;
     const column = new Column({
         ...req.body,
     });
     try {
+        const board = await Board.findOne({ _id: _id })
+
+        if (!board) {
+            return res.status(404).send()
+        }
+        board["columnIds"].push({ columnId: column._id })
         await column.save()
-        res.status(201).send({ column })
+        await board.save()
+        res.status(201).send({ board })
     } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
+router.patch('/boards/:boardId/columns/:columnId', auth, async (req, res) => {
+    const columnId = req.params.columnId
+    
+    try {
+        const column = await Column.findOne({ _id: columnId })
+        console.log(column)
+        if (!column) {
+            return res.status(404).send()
+        }
+
+        column["title"] = req.body.columnTitle
+
+        await column.save()
+        res.status(200).send({ column })
+    } catch(e) {
         res.status(400).send(e)
     }
 })

@@ -11,14 +11,14 @@ const boardSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    columns: [{
-      columnID: {
+    columnIds: [{
+      columnId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Column'
       }  
     }],
-    users: [{
-        userID: {
+    userIds: [{
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'User'

@@ -22,7 +22,17 @@ const initialData = {
       taskIds: []
     }
   },
-  columnOrder: ["column-1", "column-2", "column-3"]
+  boards: {
+    "board-1": {
+      id: "board-1",
+      title: "To-do list",
+      columnsIds: ["column-1", "column-2", "column-3"]
+    }
+  },
+  boardOrder: ["board-1"],
+  tasksNo: 4,
+  columnsNo: 3,
+  boardsNo: 1
 };
 
 export default initialData;

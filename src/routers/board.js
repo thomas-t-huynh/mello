@@ -2,16 +2,36 @@ const express = require('express')
 const router = new express.Router()
 const auth = require('../middleware/auth')
 const Board = require('../models/board')
-const mongoose = require('mongoose')
+const User = require('../models/user');
+
+router.get('/boards', auth, async (req, res) => {
+    const user = await User.findOne({ _id: req.user.id })
+    try {
+        console.log(req.user.id)
+        const boardTitles = await Board.find({})
+        const usersBoard = boardTitles.filter((board) => {
+            return board.userIds.find((user) => {
+                return user.userId.toString() === req.user.id
+            })
+        })
+        res.status(200).send({ usersBoard })
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
 
 router.post('/boards', auth, async (req, res) => {
     const board = new Board({
         ...req.body,
         owner: req.user.id,
-        users: [{userID: req.user._id}]
+        userIds: [{userId: req.user._id}]
     });
     try {
+        const user = await User.findOne({ _id: req.user.id })
+        user.boardIds.push({ boardId: board._id })
+        console.log(user)
         await board.save()
+        await user.save()
         res.status(201).send({ board })
     } catch (e) {
         res.status(400).send(e)
@@ -21,7 +41,7 @@ router.post('/boards', auth, async (req, res) => {
 router.patch('/boards/:id', auth, async (req, res) => {
     const _id = req.params.id;
     const update = Object.keys(req.body)[0]
-    const allowedUpdates = ['users', 'owner', 'columns']
+    const allowedUpdates = ['userIds', 'owner', 'columnIds']
     const isValidOperation = allowedUpdates.includes(update)
     if (!isValidOperation) {
         return res.status(400).send({ error: 'Invalid update' })
@@ -32,14 +52,13 @@ router.patch('/boards/:id', auth, async (req, res) => {
         if (!board) {
             return res.status(404).send()
         }
-        if (update === 'users') {
-            board[update].push({ userID: req.body.users})
-        } else if (update === 'columns') {
-            board[update].push({ columnID: req.body.columns})
+        if (update === 'userIds') {
+            board[update].push({ userId: req.body.userIds})
+        } else if (update === 'columnIds') {
+            board[update].push({ columnId: req.body.columnIds})
         } else {
             board[update] = req.body.owner
         }
-        
         await board.save()
         res.send(board)
     } catch(e) {
