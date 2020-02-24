@@ -17,6 +17,7 @@ const columnSchema = new mongoose.Schema({
     timestamps: true
 })
 
+
 columnSchema.virtual('board', {
     ref: 'Board',
     localField: '_id',

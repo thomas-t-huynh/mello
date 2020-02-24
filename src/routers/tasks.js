@@ -1,22 +1,76 @@
 const express = require('express')
 const router = new express.Router()
 const Task = require('../models/task')
-const Board = require('../models/board');
+const Column = require('../models/column')
+const Board = require('../models/board')
 const auth = require('../middleware/auth')
 
-router.post('/tasks', auth,  async (req, res) => {
+router.post('/boards/:boardId/columns/:columnId/tasks', auth,  async (req, res) => {
     //const task = new Task(req.body);
+    const columnId = req.params.columnId
     const task = new Task({
         ...req.body,
         owner: req.user._id
     })
     try {
+
+        const column = await Column.findOne({ _id: columnId })
+        console.log(column)
+        if (!column) {
+            return res.status(404).send(0)
+        }
+
+        column["taskIds"].push({ taskId: task._id})
+
         await task.save()
-        res.status(201).send(task)
+        await column.save()
+        res.status(201).send({ column })
     } catch (e) {
         res.status(400).send(e)
     }
 })
+
+router.patch('/boards/:boardId/columns/:columnId/tasks/:taskId', auth, async (req, res) => {
+    const taskId = req.params.taskId
+
+    try {
+        const task = await Task.findOne({ _id: taskId })
+        
+        if (!task) {
+            res.status(404).send()
+        }
+        task.content = req.body.content
+        await task.save()
+        res.status(200).send({ task })
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
+router.patch('/boards/:boardId/columns/:columnId/tasks', auth, async (req, res) => {
+    const columnId = req.params.columnId
+    const sourceIndex = req.body.sourceIndex
+    const destinationIndex = req.body.destinationIndex
+    try {
+        const column = await Column.findOne({ _id: columnId })
+
+        if (!column) {
+            res.status(404).send()
+        }
+        console.log(column.taskIds)
+        const  sourceId = column.taskIds[sourceIndex]
+
+        column.taskIds.splice(sourceIndex, 1)
+        column.taskIds.splice(destinationIndex, 0, sourceId)
+
+        await column.save()
+
+        res.status(200).send({ column })
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 
 // GET /tasks?completed=true
 // GET /tasks?limit=10&skip=0

@@ -44,6 +44,24 @@ router.patch('/boards/:boardId/columns/:columnId', auth, async (req, res) => {
     }
 })
 
+router.delete('/boards/:boardId/columns/:columnId', auth, async (req, res) => {
+    const columnId = req.params.columnId
+    const boardId = req.params.boardId
+    
+    try {
+        const column = await Column.findOneAndDelete({ _id: columnId })
+        let board = await Board.findOne({ _id: boardId })
+
+        board.columnIds = board.columnIds.filter((column) => column.columnId.toString() !== columnId)
+
+        await board.save()
+
+        res.status(200).send({ column })
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 // router.patch('/boards/:id', auth, async (req, res) => {
 //     const _id = req.params.id;
 //     const update = Object.keys(req.body)[0]
