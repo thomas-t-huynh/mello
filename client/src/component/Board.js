@@ -7,10 +7,29 @@ import { useParams } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
+  padding-top: 45px;
 `;
 
 const AddColumnButton = styled.button`
-  height: 20px;
+  margin: 8px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  min-width: 250px;
+  height: 100%;
+  background: #d9d9d9;
+  border: none;
+  color: #808080;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  &:hover {
+    background: #e6e6e6;
+  }
+  cursor: pointer;
+  span {
+    font-size: 20px;
+    margin-right: 5px;
+  }
 `;
 
 class Board extends React.Component {
@@ -114,12 +133,14 @@ class Board extends React.Component {
     this.setState({ columnTitle: e.target.value });
   };
 
-  handleAddColumn = (columnId = undefined) => {
-    this.props.addColumn(
-      this.props.match.params.boardId,
-      this.state.columnTitle,
-      columnId
-    );
+  handleAddColumn = (columnId = undefined, keyValue) => {
+    if (keyValue === "Enter") {
+      this.props.addColumn(
+        this.props.match.params.boardId,
+        this.state.columnTitle,
+        columnId
+      );
+    }
     this.setState({
       preColumn: false,
       columnTitle: ""
@@ -164,7 +185,7 @@ class Board extends React.Component {
             />
           ) : null}
           <AddColumnButton onClick={() => this.setState({ preColumn: true })}>
-            +
+            <span>+</span>Add a column
           </AddColumnButton>
         </Container>
       </DragDropContext>

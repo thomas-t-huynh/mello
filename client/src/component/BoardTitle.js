@@ -5,15 +5,17 @@ import { Link } from "react-router-dom";
 const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgrey;
-  border-radius: 2px;
+  border-radius: 5px;
   width: 150px;
   height: 75px;
   padding: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background: #d9d9d9;
+  color: #808080;
   &:hover {
-    background: lightgreen;
+    background: #e6e6e6;
   }
 `;
 

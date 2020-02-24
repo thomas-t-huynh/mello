@@ -1,9 +1,12 @@
 import React from "react";
 import "@atlaskit/css-reset";
+import "./styles.css";
 import initialData from "./init-data";
 import styled from "styled-components";
 import Board from "./component/Board";
 import Home from "./Home";
+import Header from "./component/Header";
+import Login from "./Login";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const Container = styled.div`
@@ -76,8 +79,14 @@ class App extends React.Component {
     console.log(this.state);
   };
 
-  addTask = columnId => {
-    console.log(columnId);
+  addTask = (columnId, taskDescription, taskId = undefined) => {
+    console.log(taskId);
+    if (taskId) {
+      const editedState = this.state;
+      editedState.tasks[taskId].content = taskDescription;
+      this.setState(editedState);
+      return;
+    }
     const tasksCount = this.state.tasksNo + 1;
     const newTask = `task-${tasksCount}`;
     const newTaskIds = [...this.state.columns[columnId].taskIds, newTask];
@@ -86,7 +95,7 @@ class App extends React.Component {
       ...this.state,
       tasks: {
         ...this.state.tasks,
-        [newTask]: { id: newTask, content: "stuff" }
+        [newTask]: { id: newTask, content: taskDescription }
       },
       columns: {
         ...this.state.columns,
@@ -108,7 +117,18 @@ class App extends React.Component {
   render() {
     return (
       <Router>
+        <Header />
         <Switch>
+          <Route exact path="/">
+            <Login />
+          </Route>
+          <Route exact path="/board">
+            <Home
+              addBoard={this.addBoard}
+              boards={this.state.boards}
+              boardOrder={this.state.boardOrder}
+            />
+          </Route>
           <Route
             path="/board/:boardId"
             render={props => (
@@ -121,14 +141,6 @@ class App extends React.Component {
               />
             )}
           />
-
-          <Route path="/">
-            <Home
-              addBoard={this.addBoard}
-              boards={this.state.boards}
-              boardOrder={this.state.boardOrder}
-            />
-          </Route>
         </Switch>
       </Router>
     );

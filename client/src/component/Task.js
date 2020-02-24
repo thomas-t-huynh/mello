@@ -3,18 +3,60 @@ import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div`
-  border: 1px solid lightgrey;
-  border-radius: 2px;
+  border-bottom: 1px solid darkgray;
+  border-right: 1px solid darkgray;
+  border-radius: 5px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: white;
-  background-color: ${props =>
+  background: #f2f2f2;
+  /* background-color: ${props =>
     props.isDragDisabled
       ? "lightgray"
       : props.isDragging
       ? "lightgreen"
-      : "white"};
+      : "white"}; */
   display: flex;
+  &:hover {
+    background: #e6e6e6;
+  }
+  div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    &:hover {
+      img {
+        visibility: visible;
+        cursor: pointer;
+      }
+    }
+    p {
+      width: 90%;
+      color: black;
+      display: inline;
+    }
+  }
+`;
+
+const TaskInput = styled.textarea`
+  width: 95%;
+  height: 95%;
+  margin: 0 auto;
+  overflow: auto;
+  resize: none;
+  border: none;
+  font-size: 16px;
+  &:focus {
+    background: #f2f2f2;
+  }
+  &:hover {
+    background: #e6e6e6;
+  }
+`;
+
+const Icon = styled.img`
+  width: 15px;
+  height: 15px;
+  visibility: hidden;
 `;
 
 // const Handle = styled.div`
@@ -26,28 +68,73 @@ const Container = styled.div`
 // `;
 
 export default class Task extends React.Component {
+  state = {
+    edit: this.props.preTask
+  };
+
+  checkIfTaskExists = keyValue => {
+    if (this.props.task) {
+      this.props.handleAddTask(this.props.task.id, keyValue);
+      this.setState({ edit: false });
+    } else {
+      this.props.handleAddTask(undefined, keyValue);
+    }
+  };
+
+  handleSetEdit = () => {
+    const originalDescription = {
+      target: {
+        value: this.props.task.content
+      }
+    };
+    this.props.setTaskDescription(originalDescription);
+    this.setState({ edit: true });
+  };
+
   render() {
     // const isDragDisabled = this.props.task.id === "task-1";
-    return (
-      <Draggable
-        draggableId={this.props.task.id}
-        index={this.props.index}
-        // isDragDisabled={isDragDisabled}
-      >
-        {(provided, snapshot) => (
-          <Container
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            // provided={provided}
-            isDragging={snapshot.isDragging}
-            // isDragDisabled={isDragDisabled}
-          >
-            {/* <Handle {...provided.dragHandleProps} /> */}
-            {this.props.task.content}
-          </Container>
-        )}
-      </Draggable>
-    );
+    if (this.state.edit) {
+      return (
+        <Container>
+          <TaskInput
+            autoFocus
+            value={this.props.taskDescription}
+            onChange={e => this.props.setTaskDescription(e)}
+            onKeyDown={e =>
+              (e.key === "Enter" || e.key === "Escape") &&
+              this.checkIfTaskExists(e.key)
+            }
+          />
+        </Container>
+      );
+    } else {
+      return (
+        <Draggable
+          draggableId={this.props.task.id}
+          index={this.props.index}
+          // isDragDisabled={isDragDisabled}
+        >
+          {(provided, snapshot) => (
+            <Container
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              // provided={provided}
+              isDragging={snapshot.isDragging}
+              // isDragDisabled={isDragDisabled}
+            >
+              {/* <Handle {...provided.dragHandleProps} /> */}
+              <div>
+                <p>{this.props.task.content}</p>
+                <Icon
+                  onClick={() => this.handleSetEdit()}
+                  src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_mode_edit_48px-512.png"
+                />
+              </div>
+            </Container>
+          )}
+        </Draggable>
+      );
+    }
   }
 }

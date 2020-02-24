@@ -10,6 +10,7 @@ const AddBoardButton = styled.button`
 const HomeContainer = styled.div`
   display: flex;
   align-items: center;
+  padding-top: 45px;
 `;
 
 const Container = styled.div`

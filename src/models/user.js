@@ -64,12 +64,6 @@ const userSchema = new mongoose.Schema({
 
 //static is for the model. Refers to the model so that's why no "this", methods is for the instances, and will most likely use "this" to refer to the instaance being passed in.
 
-userSchema.virtual('tasks', {
-    ref: 'Task',
-    localField: '_id',
-    foreignField: 'owner'
-})
-
 userSchema.virtual('board', {
     ref: 'Board',
     localField: '_id',
