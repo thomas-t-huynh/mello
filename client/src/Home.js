@@ -39,7 +39,7 @@ const Home = ({ boardOrder, boards, addBoard }) => {
 
   return (
     <HomeContainer>
-      {boardOrder.map(board => {
+      {boardOrder && boardOrder.map(board => {
         return (
           <BoardTitle
             key={boards[board].id}

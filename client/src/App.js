@@ -7,6 +7,7 @@ import Board from "./component/Board";
 import Home from "./Home";
 import Header from "./component/Header";
 import Login from "./Login";
+import SignUp from "./SignUp";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const Container = styled.div`
@@ -14,7 +15,10 @@ const Container = styled.div`
 `;
 
 class App extends React.Component {
-  state = initialData;
+  state = {
+    ...initialData,
+    account: {}
+  }
 
   addBoard = (title, editedBoard = undefined) => {
     if (editedBoard) {
@@ -114,14 +118,18 @@ class App extends React.Component {
     this.setState(newState);
   };
 
+  setUserAccount = (accountInfo) => {
+    this.setState({ account: accountInfo })
+  }
+
   render() {
+    console.log(this.state.account)
     return (
       <Router>
         <Header />
         <Switch>
-          <Route exact path="/">
-            <Login />
-          </Route>
+          <Route exact path="/" render={props => <Login setUserAccount={this.setUserAccount} />} />
+          <Route path="/signup" render={props => <SignUp setUserAccount={this.setUserAccount} />} />
           <Route exact path="/board">
             <Home
               addBoard={this.addBoard}

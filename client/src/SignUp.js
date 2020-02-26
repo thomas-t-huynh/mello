@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Link, useHistory } from "react-router-dom";
-
+import { useHistory } from "react-router-dom";
 import UserInfoForm from "./component/UserInfoForm";
 
-
-const Login = ({ setUserAccount }) => {
-    const History = useHistory()
+const SignUp = ({ setUserAccount }) => {
     const [ accountInfo, setAccountInfo ] = useState({
         name: "thomy",
         email: "thomy@domain.com",
         password: "notagoodpw"
     })
+    const History = useHistory();
     const { name, email, password } = accountInfo;
     const handleOnChange = e => {
         setAccountInfo({...accountInfo, [e.target.name]: e.target.value})
@@ -21,7 +19,7 @@ const Login = ({ setUserAccount }) => {
     const handleOnSubmit = e => {
         e.preventDefault()
         axios
-            .post(`http://localhost:3001/users/login`, { 
+            .post(`http://localhost:3001/users`, { 
                 "name": name,
                 "email": email,
                 "password": password
@@ -36,10 +34,9 @@ const Login = ({ setUserAccount }) => {
 
     return (
         <div>
-            <UserInfoForm  header={"Login"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} name={name} email={email} password={password} />
-            <Link to="/signup">Didn't sign up yet? Click here</Link>
+            <UserInfoForm header={"Signup"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} name={name} email={email} password={password} />
         </div>
     );
 };
 
-export default Login;
+export default SignUp;
