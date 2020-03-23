@@ -9,10 +9,14 @@ router.get('/boards', auth, async (req, res) => {
     try {
         console.log(req.user.id)
         const boardTitles = await Board.find({})
-        const usersBoard = boardTitles.filter((board) => {
-            return board.userIds.find((user) => {
+        let usersBoard = {}
+        boardTitles.forEach((board) => {
+            const userBoardFound = board.userIds.find((user) => {
                 return user.userId.toString() === req.user.id
             })
+            if (userBoardFound) {
+                usersBoard[board._id] =  { ...board._doc }
+            }
         })
         res.status(200).send({ usersBoard })
     } catch (e) {
@@ -22,7 +26,7 @@ router.get('/boards', auth, async (req, res) => {
 
 router.post('/boards', auth, async (req, res) => {
     const board = new Board({
-        ...req.body,
+        title: req.body.title,
         owner: req.user.id,
         userIds: [{userId: req.user._id}]
     });

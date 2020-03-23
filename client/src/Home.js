@@ -42,7 +42,7 @@ const Home = ({ boardOrder, boards, addBoard }) => {
       {boardOrder && boardOrder.map(board => {
         return (
           <BoardTitle
-            key={boards[board].id}
+            key={boards[board]._id}
             setBoardTitle={setBoardTitle}
             handleAddBoard={handleAddBoard}
             board={board}

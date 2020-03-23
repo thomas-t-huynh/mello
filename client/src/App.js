@@ -9,6 +9,7 @@ import Header from "./component/Header";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -18,6 +19,30 @@ class App extends React.Component {
   state = {
     ...initialData,
     account: {}
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": this.state.account.token
+    }
+    if (prevState.account !== this.state.account) {
+      console.log('fetching boards....')
+      axios.get(`http://localhost:3001/boards`, {
+        headers: headers
+      })
+      .then(res => {
+        const newState = {
+          boards: {
+            ...res.data.usersBoard
+          },
+          boardOrder: [ ...Object.keys(res.data.usersBoard)]
+        }
+        this.setState({ ...newState })
+      })
+      .catch(err => console.log(err))
+    }
+
   }
 
   addBoard = (title, editedBoard = undefined) => {
@@ -26,27 +51,53 @@ class App extends React.Component {
       editedState.boards[editedBoard.id].title = editedBoard.title;
       this.setState(editedState);
     } else {
-      const boardCount = this.state.boardsNo + 1;
-      const newBoardOrder = [...this.state.boardOrder, `board-${boardCount}`];
-      const newState = {
-        ...this.state,
-        boards: {
-          ...this.state.boards,
-          [`board-${boardCount}`]: {
-            id: `board-${boardCount}`,
-            title: title,
-            columnsIds: []
-          }
-        },
-        boardOrder: newBoardOrder,
-        boardsNo: this.state.boardsNo + 1
-      };
-      this.setState(newState);
-      console.log(newState);
-    }
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": this.state.account.token
+      }
+
+      axios
+        .post(`http://localhost:3001/boards`, {"title": title  }, {
+          headers: headers
+        })
+        .then(res => {
+          const { id } = res.data.board
+          const newBoardOrder = [...this.state.boardOrder, `board-${id}`];
+          const newState = {
+            ...this.state,
+            boards: {
+              ...this.state.boards,
+              [`board-${id}`]: {
+                id: `board-${id}`,
+                title: title,
+                columnsIds: []
+              }
+            },
+            boardOrder: newBoardOrder,
+          };
+          this.setState(newState);
+        })
+        .catch(err => console.log(err));
+    //     const newBoardOrder = [...this.state.boardOrder, `board-${boardCount}`];
+    //     const newState = {
+    //       ...this.state,
+    //       boards: {
+    //       ...this.state.boards,
+    //       [`board-${boardCount}`]: {
+    //         id: `board-${boardCount}`,
+    //         title: title,
+    //         columnsIds: []
+    //       }
+    //     },
+    //     boardOrder: newBoardOrder,
+    //   };
+    //   this.setState(newState);
+    //   console.log(newState);
+    // }
 
     // console.log(...this.state.boards);
-  };
+    };
+  }
 
   addColumn = (boardId, columnTitle, columnId = undefined) => {
     if (columnId) {
@@ -80,7 +131,6 @@ class App extends React.Component {
     };
 
     this.setState(newState);
-    console.log(this.state);
   };
 
   addTask = (columnId, taskDescription, taskId = undefined) => {
@@ -110,26 +160,32 @@ class App extends React.Component {
       },
       tasksNo: tasksCount
     };
-    console.log(newState);
-    this.setState(newState);
+    this.setState({ });
   };
 
   reorderTasks = newState => {
     this.setState(newState);
   };
 
-  setUserAccount = (accountInfo) => {
-    this.setState({ account: accountInfo })
-  }
+  setUserAccount = accountInfo => {
+    this.setState({ account: accountInfo });
+  };
 
   render() {
-    console.log(this.state.account)
+    console.log(this.state);
     return (
       <Router>
         <Header />
         <Switch>
-          <Route exact path="/" render={props => <Login setUserAccount={this.setUserAccount} />} />
-          <Route path="/signup" render={props => <SignUp setUserAccount={this.setUserAccount} />} />
+          <Route
+            exact
+            path="/"
+            render={props => <Login setUserAccount={this.setUserAccount} />}
+          />
+          <Route
+            path="/signup"
+            render={props => <SignUp setUserAccount={this.setUserAccount} />}
+          />
           <Route exact path="/board">
             <Home
               addBoard={this.addBoard}
