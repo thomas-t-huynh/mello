@@ -149,7 +149,8 @@ class Board extends React.Component {
 
   render() {
     const boardId = this.props.match.params.boardId;
-    const { boards, columns, tasks } = this.props.initialData;
+    const { boards, columns, tasks } = this.props.boardData;
+    console.log('board.js ', this.props.boardData)
     return (
       <DragDropContext
         onDragStart={this.onDragStart}
@@ -157,12 +158,10 @@ class Board extends React.Component {
         onDragEnd={this.onDragEnd}
       >
         <Container>
-          {boards[boardId].columnsIds.map((columnId, index) => {
+          {boards[boardId].columnIds && boards[boardId].columnIds.map((columnId, index) => {
             const column = columns[columnId];
             const columnTasks = column.taskIds.map(taskId => tasks[taskId]);
-
             // const isDropDisabled = index < this.state.homeIndex;
-
             return (
               <Column
                 key={column.id}

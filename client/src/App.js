@@ -42,7 +42,6 @@ class App extends React.Component {
       })
       .catch(err => console.log(err))
     }
-
   }
 
   addBoard = (title, editedBoard = undefined) => {
@@ -198,7 +197,7 @@ class App extends React.Component {
             render={props => (
               <Board
                 reorderTasks={this.reorderTasks}
-                initialData={this.state}
+                boardData={this.state}
                 addColumn={this.addColumn}
                 addTask={this.addTask}
                 {...props}

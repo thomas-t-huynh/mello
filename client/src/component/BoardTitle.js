@@ -79,7 +79,7 @@ const BoardTitle = ({
   } else {
     return (
       <Container>
-        <Link to={`/board/${boards[board].id}`}>{boards[board].title}</Link>
+        <Link to={`/board/${boards[board]._id}`}>{boards[board].title}</Link>
         <EditButton onClick={() => handleSetEdit()}>...</EditButton>
       </Container>
     );
