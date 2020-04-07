@@ -4,6 +4,15 @@ const auth = require('../middleware/auth')
 const Column = require('../models/column')
 const Board = require('../models/board')
 
+router.get('/boards/:boardId/columns', auth, async (req, res) => {
+    const columnIds = req.body.columnIds
+    console.log(`routers/column.js`, columnIds)
+    try {
+
+    } catch (e) {
+
+    }
+})
 
 router.post('/boards/:boardId/columns', auth, async (req, res) => {
     const _id = req.params.boardId;

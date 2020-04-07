@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
 import Column from "./Column";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -58,6 +59,24 @@ class Board extends React.Component {
   //     : 0;
   //   document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
   // };
+  componentDidMount() {
+    if (this.props.boardData.columnIds) {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: this.props.token
+      };
+      const columnIds = this.props.boardData.columnIds.join("");
+      console.log(columnIds);
+      axios
+        .get(
+          "/boards/:boardId/columns",
+          { columnIds: columnIds },
+          { headers: headers }
+        )
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+    }
+  }
 
   onDragEnd = result => {
     // this.setState({
@@ -150,7 +169,6 @@ class Board extends React.Component {
   render() {
     const boardId = this.props.match.params.boardId;
     const { boards, columns, tasks } = this.props.boardData;
-    console.log('board.js ', this.props.boardData)
     return (
       <DragDropContext
         onDragStart={this.onDragStart}
@@ -158,23 +176,24 @@ class Board extends React.Component {
         onDragEnd={this.onDragEnd}
       >
         <Container>
-          {boards[boardId].columnIds && boards[boardId].columnIds.map((columnId, index) => {
-            const column = columns[columnId];
-            const columnTasks = column.taskIds.map(taskId => tasks[taskId]);
-            // const isDropDisabled = index < this.state.homeIndex;
-            return (
-              <Column
-                key={column.id}
-                column={column}
-                tasks={columnTasks}
-                addTask={this.props.addTask}
-                columnTitle={this.state.columnTitle}
-                setColumnTitle={this.setColumnTitle}
-                handleAddColumn={this.handleAddColumn}
-                // isDropDisabled={isDropDisabled}
-              />
-            );
-          })}
+          {boards[boardId].columnIds &&
+            boards[boardId].columnIds.map((columnId, index) => {
+              const column = columns[columnId];
+              const columnTasks = column.taskIds.map(taskId => tasks[taskId]);
+              // const isDropDisabled = index < this.state.homeIndex;
+              return (
+                <Column
+                  key={column.id}
+                  column={column}
+                  tasks={columnTasks}
+                  addTask={this.props.addTask}
+                  columnTitle={this.state.columnTitle}
+                  setColumnTitle={this.setColumnTitle}
+                  handleAddColumn={this.handleAddColumn}
+                  // isDropDisabled={isDropDisabled}
+                />
+              );
+            })}
           {this.state.preColumn ? (
             <Column
               preColumn={this.state.preColumn}

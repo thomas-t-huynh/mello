@@ -105,31 +105,42 @@ class App extends React.Component {
       this.setState(editedState);
       return;
     }
-    const columnCount = this.state.columnsNo + 1;
-    const newColumn = `column-${columnCount}`;
-    const newColumnsId = [...this.state.boards[boardId].columnsIds, newColumn];
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": this.state.account.token
+    }
+    axios
+    .post(`http://localhost:3001/boards/${boardId}/columns`, {"title": columnTitle  }, {
+      headers: headers
+    })
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
 
-    const newState = {
-      ...this.state,
-      columns: {
-        ...this.state.columns,
-        [newColumn]: {
-          id: newColumn,
-          title: columnTitle,
-          taskIds: []
-        }
-      },
-      boards: {
-        ...this.state.boards,
-        [boardId]: {
-          ...this.state.boards[boardId],
-          columnsIds: newColumnsId
-        }
-      },
-      columnsNo: columnCount
-    };
+    // const columnCount = this.state.columnsNo + 1;
+    // const newColumn = `column-${columnCount}`;
+    // const newColumnsId = [...this.state.boards[boardId].columnsIds, newColumn];
 
-    this.setState(newState);
+    // const newState = {
+    //   ...this.state,
+    //   columns: {
+    //     ...this.state.columns,
+    //     [newColumn]: {
+    //       id: newColumn,
+    //       title: columnTitle,
+    //       taskIds: []
+    //     }
+    //   },
+    //   boards: {
+    //     ...this.state.boards,
+    //     [boardId]: {
+    //       ...this.state.boards[boardId],
+    //       columnsIds: newColumnsId
+    //     }
+    //   },
+    //   columnsNo: columnCount
+    // };
+
+    // this.setState(newState);
   };
 
   addTask = (columnId, taskDescription, taskId = undefined) => {
@@ -200,6 +211,7 @@ class App extends React.Component {
                 boardData={this.state}
                 addColumn={this.addColumn}
                 addTask={this.addTask}
+                token={this.state.account.token}
                 {...props}
               />
             )}
