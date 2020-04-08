@@ -34,54 +34,21 @@ const AddColumnButton = styled.button`
 `;
 
 class Board extends React.Component {
-  state = {
-    preColumn: false,
-    columnTitle: ""
-  };
-  // onDragStart = start => {
-  //   const homeIndex = this.state.columnOrder.indexOf(start.source.droppableId);
-
-  //   this.setState({
-  //     homeIndex
-  //   });
-  // };
-
-  // onDragStart = () => {
-  //   document.body.style.color = "orange";
-  //   document.body.style.transition = "background-color 0.2s ease";
-  // };
-
-  // onDragUpdate = update => {
-  //   const { destination } = update;
-
-  //   const opacity = destination
-  //     ? destination.index / Object.keys(this.state.tasks).length
-  //     : 0;
-  //   document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
-  // };
+  constructor(props) {
+    super(props);
+      this.state = {
+      preColumn: false,
+      columnTitle: "",
+      token: ""
+    };
+  }
   componentDidMount() {
-    if (this.props.boardData.columnIds) {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: this.props.token
-      };
-      const columnIds = this.props.boardData.columnIds.join("");
-      console.log(columnIds);
-      axios
-        .get(
-          "/boards/:boardId/columns",
-          { columnIds: columnIds },
-          { headers: headers }
-        )
-        .then(res => console.log(res))
-        .catch(err => console.log(err));
-    }
+    // try to make this call in app.js instead
+    const boardId = "5e77e1a66353f13154be8cee"
+    this.props.getColumns(boardId)
   }
 
   onDragEnd = result => {
-    // this.setState({
-    //   homeIndex: null
-    // });
     const { columns } = this.props.initialData;
     document.body.style.color = "inherit";
     const { destination, source, draggableId } = result;
@@ -172,10 +139,9 @@ class Board extends React.Component {
     return (
       <DragDropContext
         onDragStart={this.onDragStart}
-        // onDragUpdate={this.onDragUpdate}
         onDragEnd={this.onDragEnd}
       >
-        <Container>
+        {/* <Container>
           {boards[boardId].columnIds &&
             boards[boardId].columnIds.map((columnId, index) => {
               const column = columns[columnId];
@@ -205,7 +171,7 @@ class Board extends React.Component {
           <AddColumnButton onClick={() => this.setState({ preColumn: true })}>
             <span>+</span>Add a column
           </AddColumnButton>
-        </Container>
+        </Container> */}
       </DragDropContext>
     );
   }

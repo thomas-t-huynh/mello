@@ -5,8 +5,8 @@ const Column = require('../models/column')
 const Board = require('../models/board')
 
 router.get('/boards/:boardId/columns', auth, async (req, res) => {
-    const columnIds = req.body.columnIds
-    console.log(`routers/column.js`, columnIds)
+    const board_id = req.params.boardId
+    console.log(`routers/column.js`)
     try {
 
     } catch (e) {

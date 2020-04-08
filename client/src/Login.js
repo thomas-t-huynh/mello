@@ -27,7 +27,7 @@ const Login = ({ setUserAccount }) => {
                 "password": password
              })
             .then((res) => {
-                console.log('LOGGED IN')
+                // console.log('LOGGED IN')
                 setUserAccount(res.data)
                 History.push("/board")
             })

@@ -22,13 +22,18 @@ class App extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    if (prevState.account !== this.state.account) {
+      this.getBoards();
+    }
+  }
+  getBoards = () => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": this.state.account.token
-    }
-    if (prevState.account !== this.state.account) {
-      console.log('fetching boards....')
-      axios.get(`http://localhost:3001/boards`, {
+    };
+    // console.log('fetching boards....')
+    axios
+      .get(`http://localhost:3001/boards`, {
         headers: headers
       })
       .then(res => {
@@ -36,14 +41,31 @@ class App extends React.Component {
           boards: {
             ...res.data.usersBoard
           },
-          boardOrder: [ ...Object.keys(res.data.usersBoard)]
-        }
-        this.setState({ ...newState })
+          boardOrder: [...Object.keys(res.data.usersBoard)]
+        };
+        this.setState({ ...newState });
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
+  };
+  getColumns = boardId => {
+    let columnIds = this.state.boards[boardId].columnIds;
+    if (columnIds) {
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": this.state.account.token
+      };
+      columnIds = columnIds.map(columnId => columnId.columnId).join(",");
+      axios
+        .get(
+          `http://localhost:3001/boards/${boardId}/columns`,
+          { headers: headers }
+        )
+        .then(res => console.log(res))
+        .catch(err => {
+          console.log(err)
+        });
     }
-  }
-
+  };
   addBoard = (title, editedBoard = undefined) => {
     if (editedBoard) {
       let editedState = this.state;
@@ -52,15 +74,19 @@ class App extends React.Component {
     } else {
       const headers = {
         "Content-Type": "application/json",
-        "Authorization": this.state.account.token
-      }
+        Authorization: this.state.account.token
+      };
 
       axios
-        .post(`http://localhost:3001/boards`, {"title": title  }, {
-          headers: headers
-        })
+        .post(
+          `http://localhost:3001/boards`,
+          { title: title },
+          {
+            headers: headers
+          }
+        )
         .then(res => {
-          const { id } = res.data.board
+          const { id } = res.data.board;
           const newBoardOrder = [...this.state.boardOrder, `board-${id}`];
           const newState = {
             ...this.state,
@@ -72,31 +98,31 @@ class App extends React.Component {
                 columnsIds: []
               }
             },
-            boardOrder: newBoardOrder,
+            boardOrder: newBoardOrder
           };
           this.setState(newState);
         })
         .catch(err => console.log(err));
-    //     const newBoardOrder = [...this.state.boardOrder, `board-${boardCount}`];
-    //     const newState = {
-    //       ...this.state,
-    //       boards: {
-    //       ...this.state.boards,
-    //       [`board-${boardCount}`]: {
-    //         id: `board-${boardCount}`,
-    //         title: title,
-    //         columnsIds: []
-    //       }
-    //     },
-    //     boardOrder: newBoardOrder,
-    //   };
-    //   this.setState(newState);
-    //   console.log(newState);
-    // }
+      //     const newBoardOrder = [...this.state.boardOrder, `board-${boardCount}`];
+      //     const newState = {
+      //       ...this.state,
+      //       boards: {
+      //       ...this.state.boards,
+      //       [`board-${boardCount}`]: {
+      //         id: `board-${boardCount}`,
+      //         title: title,
+      //         columnsIds: []
+      //       }
+      //     },
+      //     boardOrder: newBoardOrder,
+      //   };
+      //   this.setState(newState);
+      //   console.log(newState);
+      // }
 
-    // console.log(...this.state.boards);
-    };
-  }
+      // console.log(...this.state.boards);
+    }
+  };
 
   addColumn = (boardId, columnTitle, columnId = undefined) => {
     if (columnId) {
@@ -107,14 +133,18 @@ class App extends React.Component {
     }
     const headers = {
       "Content-Type": "application/json",
-      "Authorization": this.state.account.token
-    }
+      Authorization: this.state.account.token
+    };
     axios
-    .post(`http://localhost:3001/boards/${boardId}/columns`, {"title": columnTitle  }, {
-      headers: headers
-    })
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
+      .post(
+        `http://localhost:3001/boards/${boardId}/columns`,
+        { title: columnTitle },
+        {
+          headers: headers
+        }
+      )
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
 
     // const columnCount = this.state.columnsNo + 1;
     // const newColumn = `column-${columnCount}`;
@@ -144,7 +174,6 @@ class App extends React.Component {
   };
 
   addTask = (columnId, taskDescription, taskId = undefined) => {
-    console.log(taskId);
     if (taskId) {
       const editedState = this.state;
       editedState.tasks[taskId].content = taskDescription;
@@ -170,7 +199,7 @@ class App extends React.Component {
       },
       tasksNo: tasksCount
     };
-    this.setState({ });
+    this.setState({});
   };
 
   reorderTasks = newState => {
@@ -182,7 +211,7 @@ class App extends React.Component {
   };
 
   render() {
-    console.log(this.state);
+    // console.log(`app,.js`, this.state);
     return (
       <Router>
         <Header />
@@ -212,6 +241,7 @@ class App extends React.Component {
                 addColumn={this.addColumn}
                 addTask={this.addTask}
                 token={this.state.account.token}
+                getColumns={this.getColumns}
                 {...props}
               />
             )}
