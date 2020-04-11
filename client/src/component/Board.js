@@ -36,17 +36,33 @@ const AddColumnButton = styled.button`
 class Board extends React.Component {
   constructor(props) {
     super(props);
-      this.state = {
+    this.state = {
       preColumn: false,
       columnTitle: "",
       token: ""
     };
   }
   componentDidMount() {
-    // try to make this call in app.js instead
-    const boardId = "5e77e1a66353f13154be8cee"
-    this.props.getColumns(boardId)
+    const boardId = this.props.match.params.boardId;
+    this.getColumns(boardId);
   }
+  getColumns = boardId => {
+    let columnIds = this.props.boardData.boards[boardId].columnIds;
+    if (columnIds) {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: this.props.token
+      };
+      axios
+        .get(`http://localhost:3001/boards/${boardId}/columns`, {
+          headers: headers
+        })
+        .then(res => console.log(res))
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
 
   onDragEnd = result => {
     const { columns } = this.props.initialData;

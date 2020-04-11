@@ -47,25 +47,6 @@ class App extends React.Component {
       })
       .catch(err => console.log(err));
   };
-  getColumns = boardId => {
-    let columnIds = this.state.boards[boardId].columnIds;
-    if (columnIds) {
-      const headers = {
-        "Content-Type": "application/json",
-        "Authorization": this.state.account.token
-      };
-      columnIds = columnIds.map(columnId => columnId.columnId).join(",");
-      axios
-        .get(
-          `http://localhost:3001/boards/${boardId}/columns`,
-          { headers: headers }
-        )
-        .then(res => console.log(res))
-        .catch(err => {
-          console.log(err)
-        });
-    }
-  };
   addBoard = (title, editedBoard = undefined) => {
     if (editedBoard) {
       let editedState = this.state;
