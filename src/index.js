@@ -6,11 +6,8 @@ const taskRouter = require('./routers/tasks')
 const columnRouter = require('./routers/column')
 const boardRouter = require('./routers/board')
 
-
 const app = express();
 const port = process.env.PORT 
-
-
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', req.headers.origin);

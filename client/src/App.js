@@ -29,7 +29,7 @@ class App extends React.Component {
   getBoards = () => {
     const headers = {
       "Content-Type": "application/json",
-      "Authorization": this.state.account.token
+      Authorization: this.state.account.token
     };
     // console.log('fetching boards....')
     axios
@@ -46,6 +46,37 @@ class App extends React.Component {
         this.setState({ ...newState });
       })
       .catch(err => console.log(err));
+  };
+  getColumns = boardId => {
+    let columnIds = this.state.boards[boardId].columnIds;
+    if (columnIds) {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: this.state.account.token
+      };
+      axios
+        .get(`http://localhost:3001/boards/${boardId}/columns`, {
+          headers: headers
+        })
+        .then(res => {
+          const fetchedColumns = {};
+          res.data.boardColumns.forEach(
+            column => (fetchedColumns[column._id] = { ...column })
+          );
+          const newState = {
+            ...this.state,
+            columns: {
+              ...this.state.columns,
+              ...fetchedColumns
+            }
+          };
+          console.log(newState);
+          this.setState(newState);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
   addBoard = (title, editedBoard = undefined) => {
     if (editedBoard) {
@@ -124,7 +155,22 @@ class App extends React.Component {
           headers: headers
         }
       )
-      .then(res => console.log(res))
+      .then(res => {
+        
+        const newState = {
+          ...this.state,
+          columns: {
+            ...this.state.columns,
+            [res.data.column._id]: res.data.column
+          },
+          boards: {
+            ...this.state.boards,
+            [res.data.board._id]: res.data.board
+          }
+        };
+        console.log(newState);
+        this.setState(newState);
+      })
       .catch(err => console.log(err));
 
     // const columnCount = this.state.columnsNo + 1;

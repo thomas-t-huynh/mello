@@ -44,28 +44,12 @@ class Board extends React.Component {
   }
   componentDidMount() {
     const boardId = this.props.match.params.boardId;
-    this.getColumns(boardId);
+    this.props.getColumns(boardId);
   }
-  getColumns = boardId => {
-    let columnIds = this.props.boardData.boards[boardId].columnIds;
-    if (columnIds) {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: this.props.token
-      };
-      axios
-        .get(`http://localhost:3001/boards/${boardId}/columns`, {
-          headers: headers
-        })
-        .then(res => console.log(res))
-        .catch(err => {
-          console.log(err);
-        });
-    }
-  };
+
 
   onDragEnd = result => {
-    const { columns } = this.props.initialData;
+    const { columns } = this.props.boardData;
     document.body.style.color = "inherit";
     const { destination, source, draggableId } = result;
 
@@ -157,15 +141,16 @@ class Board extends React.Component {
         onDragStart={this.onDragStart}
         onDragEnd={this.onDragEnd}
       >
-        {/* <Container>
-          {boards[boardId].columnIds &&
+        <Container>
+          {(boards[boardId].columnIds && columns) &&
             boards[boardId].columnIds.map((columnId, index) => {
-              const column = columns[columnId];
+  
+              const column = columns[columnId.columnId];
               const columnTasks = column.taskIds.map(taskId => tasks[taskId]);
               // const isDropDisabled = index < this.state.homeIndex;
               return (
                 <Column
-                  key={column.id}
+                  key={column._id}
                   column={column}
                   tasks={columnTasks}
                   addTask={this.props.addTask}
@@ -187,7 +172,7 @@ class Board extends React.Component {
           <AddColumnButton onClick={() => this.setState({ preColumn: true })}>
             <span>+</span>Add a column
           </AddColumnButton>
-        </Container> */}
+        </Container>
       </DragDropContext>
     );
   }

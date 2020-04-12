@@ -7,7 +7,6 @@ const User = require('../models/user');
 router.get('/boards', auth, async (req, res) => {
     const user = await User.findOne({ _id: req.user.id })
     try {
-        console.log(req.user.id)
         const boardTitles = await Board.find({})
         let usersBoard = {}
         boardTitles.forEach((board) => {

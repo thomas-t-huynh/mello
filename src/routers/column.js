@@ -5,12 +5,25 @@ const Column = require('../models/column')
 const Board = require('../models/board')
 
 router.get('/boards/:boardId/columns', auth, async (req, res) => {
-    const board_id = req.params.boardId
-    console.log(`routers/column.js`, req.params)
+    const _id = req.params.boardId
+
     try {
+        const board = await Board.findOne({ _id: _id })
+        // console.log('column.js', board)
+        if (!board) {
+            return res.status(404).send()
+        }
+        const promises = board.columnIds.map( async (column)=> {
+            const boardColumn = await Column.findOne({ _id : column.columnId })
+            if (boardColumn) {
+                return boardColumn
+            }
+        })
+        const boardColumns = await Promise.all(promises)
+        res.status(201).send({ boardColumns })
 
     } catch (e) {
-
+        res.status(400).send(e)
     }
 })
 
@@ -28,7 +41,7 @@ router.post('/boards/:boardId/columns', auth, async (req, res) => {
         board["columnIds"].push({ columnId: column._id })
         await column.save()
         await board.save()
-        res.status(201).send({ board })
+        res.status(201).send({ board, column })
     } catch (e) {
         res.status(400).send(e)
     }
