@@ -23,7 +23,7 @@ class App extends React.Component {
   componentDidMount() {
     const melloUser = window.localStorage.getItem("mello-user");
     if (melloUser) {
-      this.setState({ account: JSON.parse(melloUser) })
+      this.setState({ account: JSON.parse(melloUser) });
     }
   }
 
@@ -121,24 +121,6 @@ class App extends React.Component {
           this.setState(newState);
         })
         .catch(err => console.log(err));
-      //     const newBoardOrder = [...this.state.boardOrder, `board-${boardCount}`];
-      //     const newState = {
-      //       ...this.state,
-      //       boards: {
-      //       ...this.state.boards,
-      //       [`board-${boardCount}`]: {
-      //         id: `board-${boardCount}`,
-      //         title: title,
-      //         columnsIds: []
-      //       }
-      //     },
-      //     boardOrder: newBoardOrder,
-      //   };
-      //   this.setState(newState);
-      //   console.log(newState);
-      // }
-
-      // console.log(...this.state.boards);
     }
   };
 
@@ -162,7 +144,6 @@ class App extends React.Component {
         }
       )
       .then(res => {
-        
         const newState = {
           ...this.state,
           columns: {
@@ -177,32 +158,6 @@ class App extends React.Component {
         this.setState(newState);
       })
       .catch(err => console.log(err));
-
-    // const columnCount = this.state.columnsNo + 1;
-    // const newColumn = `column-${columnCount}`;
-    // const newColumnsId = [...this.state.boards[boardId].columnsIds, newColumn];
-
-    // const newState = {
-    //   ...this.state,
-    //   columns: {
-    //     ...this.state.columns,
-    //     [newColumn]: {
-    //       id: newColumn,
-    //       title: columnTitle,
-    //       taskIds: []
-    //     }
-    //   },
-    //   boards: {
-    //     ...this.state.boards,
-    //     [boardId]: {
-    //       ...this.state.boards[boardId],
-    //       columnsIds: newColumnsId
-    //     }
-    //   },
-    //   columnsNo: columnCount
-    // };
-
-    // this.setState(newState);
   };
 
   addTask = (columnId, taskDescription, taskId = undefined) => {
@@ -212,26 +167,41 @@ class App extends React.Component {
       this.setState(editedState);
       return;
     }
-    const tasksCount = this.state.tasksNo + 1;
-    const newTask = `task-${tasksCount}`;
-    const newTaskIds = [...this.state.columns[columnId].taskIds, newTask];
-
-    const newState = {
-      ...this.state,
-      tasks: {
-        ...this.state.tasks,
-        [newTask]: { id: newTask, content: taskDescription }
-      },
-      columns: {
-        ...this.state.columns,
-        [columnId]: {
-          ...this.state.columns[columnId],
-          taskIds: newTaskIds
-        }
-      },
-      tasksNo: tasksCount
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.state.account.token
     };
-    this.setState({});
+
+    const data = {
+      content: taskDescription
+    }
+    console.log(columnId, taskDescription)
+    axios
+      .post(`http://localhost:3001/boards/columns/${columnId}/tasks`, data, { headers: headers })
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => console.log(err));
+    // const tasksCount = this.state.tasksNo + 1;
+    // const newTask = `task-${tasksCount}`;
+    // const newTaskIds = [...this.state.columns[columnId].taskIds, newTask];
+
+    // const newState = {
+    //   ...this.state,
+    //   tasks: {
+    //     ...this.state.tasks,
+    //     [newTask]: { id: newTask, content: taskDescription }
+    //   },
+    //   columns: {
+    //     ...this.state.columns,
+    //     [columnId]: {
+    //       ...this.state.columns[columnId],
+    //       taskIds: newTaskIds
+    //     }
+    //   },
+    //   tasksNo: tasksCount
+    // };
+    // this.setState({});
   };
 
   reorderTasks = newState => {
@@ -243,11 +213,11 @@ class App extends React.Component {
   };
 
   clearColumnsAndTasks = () => {
-    this.setState({ columns: undefined, tasks: undefined })
-  }
+    this.setState({ columns: undefined, tasks: undefined });
+  };
 
   render() {
-    console.log(`app,.js`, this.state);
+    console.log(`app,js`, this.state);
     return (
       <Router>
         <Header />

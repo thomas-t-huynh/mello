@@ -62,7 +62,7 @@ export default class Column extends React.Component {
 
   checkIfColumnExists = keyValue => {
     if (this.props.column) {
-      this.props.handleAddColumn(this.props.column.id, keyValue);
+      this.props.handleAddColumn(this.props.column._id, keyValue);
       this.setState({ edit: false });
     } else {
       this.props.handleAddColumn(undefined, keyValue);
@@ -86,7 +86,7 @@ export default class Column extends React.Component {
   handleAddTask = (taskId = undefined, keyValue) => {
     if (keyValue === "Enter") {
       this.props.addTask(
-        this.props.column.id,
+        this.props.column._id,
         this.state.taskDescription,
         taskId
       );
@@ -98,7 +98,7 @@ export default class Column extends React.Component {
     return (
       <div>
         <Droppable
-          droppableId={this.props.column.id}
+          droppableId={this.props.column._id}
           // type={this.props.column.id === "column-3" ? "done" : "active"}
           // isDropDisabled={this.props.isDropDisabled}
         >
@@ -110,7 +110,7 @@ export default class Column extends React.Component {
             >
               {this.props.tasks.map((task, index) => (
                 <Task
-                  key={task.id}
+                  key={task._id}
                   task={task}
                   index={index}
                   preTask={this.state.preTask}

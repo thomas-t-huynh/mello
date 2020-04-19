@@ -5,7 +5,7 @@ const Column = require('../models/column')
 const Board = require('../models/board')
 const auth = require('../middleware/auth')
 
-router.post('/boards/:boardId/columns/:columnId/tasks', auth,  async (req, res) => {
+router.post('/boards/columns/:columnId/tasks', auth,  async (req, res) => {
     //const task = new Task(req.body);
     const columnId = req.params.columnId
     const task = new Task({
@@ -13,9 +13,7 @@ router.post('/boards/:boardId/columns/:columnId/tasks', auth,  async (req, res) 
         owner: req.user._id
     })
     try {
-
         const column = await Column.findOne({ _id: columnId })
-        console.log(column)
         if (!column) {
             return res.status(404).send(0)
         }
