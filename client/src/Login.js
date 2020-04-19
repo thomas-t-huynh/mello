@@ -27,8 +27,8 @@ const Login = ({ setUserAccount }) => {
                 "password": password
              })
             .then((res) => {
-                // console.log('LOGGED IN')
                 setUserAccount(res.data)
+                window.localStorage.setItem("mello-user", JSON.stringify(res.data))
                 History.push("/board")
             })
             .catch((e) => console.log(e))

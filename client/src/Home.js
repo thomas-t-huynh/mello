@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import BoardTitle from "./component/BoardTitle";
 import { Link } from "react-router-dom";
@@ -25,9 +25,15 @@ const Container = styled.div`
   }
 `;
 
-const Home = ({ boardOrder, boards, addBoard }) => {
+const Home = ({ boardOrder, boards, addBoard, clearColumnsAndTasks, columns }) => {
   const [preBoard, setPreBoard] = useState(false);
   const [boardTitle, setBoardTitle] = useState("");
+
+  useEffect(() => {
+    if (columns) {
+      clearColumnsAndTasks();
+    }
+  }, [])
 
   const handleAddBoard = (keyValue, editedBoard) => {
     if (keyValue === "Enter") {

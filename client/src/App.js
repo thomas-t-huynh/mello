@@ -17,15 +17,22 @@ const Container = styled.div`
 
 class App extends React.Component {
   state = {
-    ...initialData,
-    account: {}
+    ...initialData
   };
+
+  componentDidMount() {
+    const melloUser = window.localStorage.getItem("mello-user");
+    if (melloUser) {
+      this.setState({ account: JSON.parse(melloUser) })
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.account !== this.state.account) {
       this.getBoards();
     }
   }
+
   getBoards = () => {
     const headers = {
       "Content-Type": "application/json",
@@ -70,7 +77,6 @@ class App extends React.Component {
               ...fetchedColumns
             }
           };
-          console.log(newState);
           this.setState(newState);
         })
         .catch(err => {
@@ -168,7 +174,6 @@ class App extends React.Component {
             [res.data.board._id]: res.data.board
           }
         };
-        console.log(newState);
         this.setState(newState);
       })
       .catch(err => console.log(err));
@@ -237,8 +242,12 @@ class App extends React.Component {
     this.setState({ account: accountInfo });
   };
 
+  clearColumnsAndTasks = () => {
+    this.setState({ columns: undefined, tasks: undefined })
+  }
+
   render() {
-    // console.log(`app,.js`, this.state);
+    console.log(`app,.js`, this.state);
     return (
       <Router>
         <Header />
@@ -257,6 +266,7 @@ class App extends React.Component {
               addBoard={this.addBoard}
               boards={this.state.boards}
               boardOrder={this.state.boardOrder}
+              clearColumnsAndTasks={this.clearColumnsAndTasks}
             />
           </Route>
           <Route

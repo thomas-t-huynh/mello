@@ -36,10 +36,11 @@
 // };
 
 const initialData = {
-  tasks: {},
+  tasks: undefined,
   columns: undefined,
   boards: {},
-  boardOrder: []
+  boardOrder: [],
+  account: {}
 };
 
 export default initialData;
