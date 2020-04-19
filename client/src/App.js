@@ -30,7 +30,6 @@ class App extends React.Component {
       }
       axios.get(`http://localhost:3001/users/me`, { headers })
       .then(res => {
-        console.log(res)
         this.setUserAccount({...res.data, token })
       })
       .catch(err => console.log(err))
@@ -200,20 +199,24 @@ class App extends React.Component {
         headers: headers
       })
       .then(res => {
+
+        const { data: { task } } = res;
+
         const newState = {
           ...this.state,
           tasks: {
             ...this.state.tasks,
-            [res.data._id]: { _id: res.data._id, content: taskDescription }
+            [task._id]: { _id: task._id, content: task.content }
           },
           columns: {
             ...this.state.columns,
             [columnId]: {
               ...this.state.columns[columnId],
-              taskIds: [...this.state.columns[columnId].taskIds, res.data._id]
+              taskIds: [...this.state.columns[columnId].taskIds, task._id]
             }
           }
         };
+        console.log(newState)
         this.setState(newState)
       })
       .catch(err => console.log(err));

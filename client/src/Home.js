@@ -30,9 +30,7 @@ const Home = ({ boardOrder, boards, addBoard, clearColumnsAndTasks, columns }) =
   const [boardTitle, setBoardTitle] = useState("");
 
   useEffect(() => {
-    if (columns) {
-      clearColumnsAndTasks();
-    }
+    clearColumnsAndTasks();
   }, [])
 
   const handleAddBoard = (keyValue, editedBoard) => {

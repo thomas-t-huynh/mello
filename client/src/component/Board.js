@@ -42,9 +42,17 @@ class Board extends React.Component {
             token: ""
         };
     }
+
+    componentDidMount() {
+        const boardId = this.props.match.params.boardId;
+        if (this.props.boardData.boards) {
+            this.props.getColumns(boardId);
+        }
+    }
+    
     componentDidUpdate(prevProps) {
+        const boardId = this.props.match.params.boardId;
         if (prevProps.boardData.boards !== this.props.boardData.boards) {
-          const boardId = this.props.match.params.boardId;
           this.props.getColumns(boardId);
         }
     }

@@ -5,6 +5,8 @@ const Column = require('../models/column')
 const Board = require('../models/board')
 const auth = require('../middleware/auth')
 
+// router.get()
+
 router.post('/boards/columns/:columnId/tasks', auth,  async (req, res) => {
     //const task = new Task(req.body);
     const columnId = req.params.columnId
@@ -18,7 +20,7 @@ router.post('/boards/columns/:columnId/tasks', auth,  async (req, res) => {
             return res.status(404).send(0)
         }
 
-        column["taskIds"].push({ taskId: task._id})
+        // column["taskIds"].push({ taskId: task._id})
 
         await task.save()
         await column.save()
