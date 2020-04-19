@@ -110,7 +110,7 @@ export default class Task extends React.Component {
     } else {
       return (
         <Draggable
-          draggableId={this.props.task.id}
+          draggableId={this.props.task._id}
           index={this.props.index}
           // isDragDisabled={isDragDisabled}
         >

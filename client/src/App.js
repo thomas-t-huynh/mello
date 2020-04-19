@@ -23,7 +23,17 @@ class App extends React.Component {
   componentDidMount() {
     const melloUser = window.localStorage.getItem("mello-user");
     if (melloUser) {
-      this.setState({ account: JSON.parse(melloUser) });
+      const token = JSON.parse(melloUser) 
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: token
+      }
+      axios.get(`http://localhost:3001/users/me`, { headers })
+      .then(res => {
+        console.log(res)
+        this.setUserAccount({...res.data, token })
+      })
+      .catch(err => console.log(err))
     }
   }
 
@@ -104,15 +114,25 @@ class App extends React.Component {
           }
         )
         .then(res => {
-          const { id } = res.data.board;
-          const newBoardOrder = [...this.state.boardOrder, `board-${id}`];
+          console.log(res)
+          const { _id, owner, userIds } = res.data.board;
+          const newBoardOrder = [...this.state.boardOrder, _id];
           const newState = {
             ...this.state,
+            account: {
+              ...this.state.account,
+              user: {
+                ...this.state.account.user,
+                boardIds: [...this.state.account.user.boardIds, { boardId: _id}]
+              }
+            },
             boards: {
               ...this.state.boards,
-              [`board-${id}`]: {
-                id: `board-${id}`,
+              [_id]: {
+                _id: _id,
                 title: title,
+                owner: owner,
+                userIds: userIds,
                 columnsIds: []
               }
             },
@@ -174,34 +194,29 @@ class App extends React.Component {
 
     const data = {
       content: taskDescription
-    }
-    console.log(columnId, taskDescription)
+    };
     axios
-      .post(`http://localhost:3001/boards/columns/${columnId}/tasks`, data, { headers: headers })
+      .post(`http://localhost:3001/boards/columns/${columnId}/tasks`, data, {
+        headers: headers
+      })
       .then(res => {
-        console.log(res)
+        const newState = {
+          ...this.state,
+          tasks: {
+            ...this.state.tasks,
+            [res.data._id]: { _id: res.data._id, content: taskDescription }
+          },
+          columns: {
+            ...this.state.columns,
+            [columnId]: {
+              ...this.state.columns[columnId],
+              taskIds: [...this.state.columns[columnId].taskIds, res.data._id]
+            }
+          }
+        };
+        this.setState(newState)
       })
       .catch(err => console.log(err));
-    // const tasksCount = this.state.tasksNo + 1;
-    // const newTask = `task-${tasksCount}`;
-    // const newTaskIds = [...this.state.columns[columnId].taskIds, newTask];
-
-    // const newState = {
-    //   ...this.state,
-    //   tasks: {
-    //     ...this.state.tasks,
-    //     [newTask]: { id: newTask, content: taskDescription }
-    //   },
-    //   columns: {
-    //     ...this.state.columns,
-    //     [columnId]: {
-    //       ...this.state.columns[columnId],
-    //       taskIds: newTaskIds
-    //     }
-    //   },
-    //   tasksNo: tasksCount
-    // };
-    // this.setState({});
   };
 
   reorderTasks = newState => {

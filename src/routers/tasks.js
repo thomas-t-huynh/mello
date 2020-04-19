@@ -22,7 +22,7 @@ router.post('/boards/columns/:columnId/tasks', auth,  async (req, res) => {
 
         await task.save()
         await column.save()
-        res.status(201).send({ column })
+        res.status(201).send({ task })
     } catch (e) {
         res.status(400).send(e)
     }

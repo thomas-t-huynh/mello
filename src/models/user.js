@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-    boardIds: [{
+     boardIds: [{
         boardId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Board'
@@ -63,6 +63,7 @@ const userSchema = new mongoose.Schema({
 })
 
 //static is for the model. Refers to the model so that's why no "this", methods is for the instances, and will most likely use "this" to refer to the instaance being passed in.
+
 
 userSchema.virtual('board', {
     ref: 'Board',

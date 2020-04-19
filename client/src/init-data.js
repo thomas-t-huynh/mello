@@ -38,7 +38,7 @@
 const initialData = {
   tasks: undefined,
   columns: undefined,
-  boards: {},
+  boards: undefined,
   boardOrder: [],
   account: {}
 };

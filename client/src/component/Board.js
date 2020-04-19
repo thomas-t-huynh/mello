@@ -42,8 +42,8 @@ class Board extends React.Component {
             token: ""
         };
     }
-    componentDidMount() {
-        if (this.props.boardData) {
+    componentDidUpdate(prevProps) {
+        if (prevProps.boardData.boards !== this.props.boardData.boards) {
           const boardId = this.props.match.params.boardId;
           this.props.getColumns(boardId);
         }
@@ -82,10 +82,9 @@ class Board extends React.Component {
                 ...this.props.initialData,
                 columns: {
                     ...this.props.initialData.columns,
-                    [newColumn.id]: newColumn
+                    [newColumn._id]: newColumn
                 }
             };
-            console.log(newState);
             this.props.reorderTasks(newState);
             return;
         }
@@ -109,8 +108,8 @@ class Board extends React.Component {
             ...this.props.initialData,
             columns: {
                 ...this.props.initialData.columns,
-                [newStart.id]: newStart,
-                [newFinish.id]: newFinish
+                [newStart._id]: newStart,
+                [newFinish._id]: newFinish
             }
         };
         this.props.reorderTasks(newState);
@@ -181,7 +180,7 @@ class Board extends React.Component {
                 </DragDropContext>
             );
         } else {
-          return <h2>Loading...</h2>
+          return <Container><h2>Loading...</h2></Container>
         }
     }
 }
