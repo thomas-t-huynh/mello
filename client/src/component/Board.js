@@ -79,7 +79,7 @@ class Board extends React.Component {
         if (start === finish) {
             const newTaskIds = Array.from(start.taskIds);
             newTaskIds.splice(source.index, 1);
-            newTaskIds.splice(destination.index, 0, draggableId);
+            newTaskIds.splice(destination.index, 0, {taskId: draggableId});
 
             const newColumn = {
                 ...start,
@@ -106,7 +106,7 @@ class Board extends React.Component {
         };
 
         const finishTaskIds = Array.from(finish.taskIds);
-        finishTaskIds.splice(destination.index, 0, draggableId);
+        finishTaskIds.splice(destination.index, 0, {taskId: draggableId});
         const newFinish = {
             ...finish,
             taskIds: finishTaskIds
