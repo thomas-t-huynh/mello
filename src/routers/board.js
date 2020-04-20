@@ -32,7 +32,6 @@ router.post('/boards', auth, async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.user.id })
         user.boardIds.push({ boardId: board._id })
-        console.log(user)
         await board.save()
         await user.save()
         res.status(201).send({ board })

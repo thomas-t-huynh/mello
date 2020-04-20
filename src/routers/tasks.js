@@ -5,22 +5,34 @@ const Column = require('../models/column')
 const Board = require('../models/board')
 const auth = require('../middleware/auth')
 
-// router.get()
+router.get(`/boards/:boardId/columns/tasks`, auth, async (req, res) => {
+    const boardId = req.params.boardId
+    try {
+        const tasks = await Task.find({ boardId: boardId })
+        if (!tasks) {
+            return res.status(404).send()
+        }
+        res.status(200).send({ tasks });
+    } catch(e) {
+        res.status(400).send(e)
+    }
+})
 
-router.post('/boards/columns/:columnId/tasks', auth,  async (req, res) => {
+router.post('/boards/columns/tasks', auth,  async (req, res) => {
     //const task = new Task(req.body);
-    const columnId = req.params.columnId
+    const columnId = req.body.columnId
     const task = new Task({
-        ...req.body,
-        owner: req.user._id
+        content: req.body.content,
+        owner: req.user._id,
+        boardId: req.body.boardId
     })
     try {
         const column = await Column.findOne({ _id: columnId })
         if (!column) {
-            return res.status(404).send(0)
+            return res.status(404).send()
         }
 
-        // column["taskIds"].push({ taskId: task._id})
+        column["taskIds"].push({ taskId: task._id})
 
         await task.save()
         await column.save()

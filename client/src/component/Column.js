@@ -86,6 +86,7 @@ export default class Column extends React.Component {
   handleAddTask = (taskId = undefined, keyValue) => {
     if (keyValue === "Enter") {
       this.props.addTask(
+        this.props.boardId,
         this.props.column._id,
         this.state.taskDescription,
         taskId

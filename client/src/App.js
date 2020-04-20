@@ -23,16 +23,17 @@ class App extends React.Component {
   componentDidMount() {
     const melloUser = window.localStorage.getItem("mello-user");
     if (melloUser) {
-      const token = JSON.parse(melloUser) 
+      const token = JSON.parse(melloUser);
       const headers = {
         "Content-Type": "application/json",
         Authorization: token
-      }
-      axios.get(`http://localhost:3001/users/me`, { headers })
-      .then(res => {
-        this.setUserAccount({...res.data, token })
-      })
-      .catch(err => console.log(err))
+      };
+      axios
+        .get(`http://localhost:3001/users/me`, { headers })
+        .then(res => {
+          this.setUserAccount({ ...res.data, token });
+        })
+        .catch(err => console.log(err));
     }
   }
 
@@ -90,7 +91,10 @@ class App extends React.Component {
         })
         .catch(err => {
           console.log(err);
-        });
+        })
+        .then(() => {
+          this.getTasks(boardId)
+        })
     }
   };
   addBoard = (title, editedBoard = undefined) => {
@@ -113,7 +117,7 @@ class App extends React.Component {
           }
         )
         .then(res => {
-          console.log(res)
+          console.log(res);
           const { _id, owner, userIds } = res.data.board;
           const newBoardOrder = [...this.state.boardOrder, _id];
           const newState = {
@@ -122,7 +126,10 @@ class App extends React.Component {
               ...this.state.account,
               user: {
                 ...this.state.account.user,
-                boardIds: [...this.state.account.user.boardIds, { boardId: _id}]
+                boardIds: [
+                  ...this.state.account.user.boardIds,
+                  { boardId: _id }
+                ]
               }
             },
             boards: {
@@ -179,7 +186,7 @@ class App extends React.Component {
       .catch(err => console.log(err));
   };
 
-  addTask = (columnId, taskDescription, taskId = undefined) => {
+  addTask = (boardId, columnId, taskDescription, taskId = undefined) => {
     if (taskId) {
       const editedState = this.state;
       editedState.tasks[taskId].content = taskDescription;
@@ -192,31 +199,58 @@ class App extends React.Component {
     };
 
     const data = {
-      content: taskDescription
+      content: taskDescription,
+      columnId,
+      boardId
     };
     axios
-      .post(`http://localhost:3001/boards/columns/${columnId}/tasks`, data, {
+      .post(`http://localhost:3001/boards/columns/tasks`, data, {
         headers: headers
       })
       .then(res => {
-
-        const { data: { task } } = res;
+        const {
+          data: { task }
+        } = res;
 
         const newState = {
           ...this.state,
           tasks: {
             ...this.state.tasks,
-            [task._id]: { _id: task._id, content: task.content }
+            [task._id]: {
+              _id: task._id,
+              content: task.content,
+            }
           },
           columns: {
             ...this.state.columns,
             [columnId]: {
               ...this.state.columns[columnId],
-              taskIds: [...this.state.columns[columnId].taskIds, task._id]
+              taskIds: [...this.state.columns[columnId].taskIds, {taskId: task._id} ]
             }
           }
         };
-        console.log(newState)
+        console.log(newState);
+        this.setState(newState);
+      })
+      .catch(err => console.log(err));
+  };
+
+  getTasks = boardId => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.state.account.token
+    };
+    axios
+      .get(`http://localhost:3001/boards/${boardId}/columns/tasks`, { headers: headers })
+      .then(res => {
+        let newTasks = {};
+        res.data.tasks.forEach((task) => newTasks[task._id] = task)
+        const newState = {
+          ...this.state,
+          tasks: {
+            ...newTasks
+          }
+        }
         this.setState(newState)
       })
       .catch(err => console.log(err));

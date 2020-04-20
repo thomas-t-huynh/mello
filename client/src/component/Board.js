@@ -87,9 +87,9 @@ class Board extends React.Component {
             };
 
             const newState = {
-                ...this.props.initialData,
+                ...this.props.boardData,
                 columns: {
-                    ...this.props.initialData.columns,
+                    ...this.props.boardData.columns,
                     [newColumn._id]: newColumn
                 }
             };
@@ -113,9 +113,9 @@ class Board extends React.Component {
         };
 
         const newState = {
-            ...this.props.initialData,
+            ...this.props.boardData,
             columns: {
-                ...this.props.initialData.columns,
+                ...this.props.boardData.columns,
                 [newStart._id]: newStart,
                 [newFinish._id]: newFinish
             }
@@ -151,11 +151,11 @@ class Board extends React.Component {
                     onDragEnd={this.onDragEnd}
                 >
                     <Container>
-                        {boards[boardId].columnIds &&
+                        {(boards[boardId].columnIds && tasks) &&
                             boards[boardId].columnIds.map((columnId, index) => {
                                 const column = columns[columnId.columnId];
                                 const columnTasks = column.taskIds.map(
-                                    taskId => tasks[taskId]
+                                    ({ taskId }) => tasks[taskId]
                                 );
                                 // const isDropDisabled = index < this.state.homeIndex;
                                 return (
@@ -167,6 +167,7 @@ class Board extends React.Component {
                                         columnTitle={this.state.columnTitle}
                                         setColumnTitle={this.setColumnTitle}
                                         handleAddColumn={this.handleAddColumn}
+                                        boardId={boardId}
                                         // isDropDisabled={isDropDisabled}
                                     />
                                 );

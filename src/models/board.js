@@ -9,21 +9,18 @@ const boardSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'User'
     },
     columnIds: [{
       columnId: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: String,
           ref: 'Column'
       }  
     }],
-    userIds: [{
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'User'
-        }
-    }]
+    userIds: {
+        type: Array
+    }
 }, {
     timestamps: true
 })
