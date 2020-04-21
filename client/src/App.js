@@ -93,22 +93,25 @@ class App extends React.Component {
           console.log(err);
         })
         .then(() => {
-          this.getTasks(boardId)
-        })
+          this.getTasks(boardId);
+        });
     }
   };
   addBoard = (title, editedBoard = undefined) => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.state.account.token
+    };
     if (editedBoard) {
-      axios.patch(`http://localhost:3001/`)
-      let editedState = this.state;
-      editedState.boards[editedBoard.id].title = editedBoard.title;
-      this.setState(editedState);
+      axios.patch(`http://localhost:3001/boards`, { title: title, _id: editedBoard._id }, { headers })
+      .then(res => {
+        console.log(res)
+        let editedState = this.state;
+        editedState.boards[editedBoard._id].title = editedBoard.title;
+        this.setState(editedState);
+      })
+      .catch(err => console.log(err))
     } else {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: this.state.account.token
-      };
-
       axios
         .post(
           `http://localhost:3001/boards`,
@@ -219,14 +222,17 @@ class App extends React.Component {
             ...this.state.tasks,
             [task._id]: {
               _id: task._id,
-              content: task.content,
+              content: task.content
             }
           },
           columns: {
             ...this.state.columns,
             [columnId]: {
               ...this.state.columns[columnId],
-              taskIds: [...this.state.columns[columnId].taskIds, {taskId: task._id} ]
+              taskIds: [
+                ...this.state.columns[columnId].taskIds,
+                { taskId: task._id }
+              ]
             }
           }
         };
@@ -242,17 +248,19 @@ class App extends React.Component {
       Authorization: this.state.account.token
     };
     axios
-      .get(`http://localhost:3001/boards/${boardId}/columns/tasks`, { headers: headers })
+      .get(`http://localhost:3001/boards/${boardId}/columns/tasks`, {
+        headers: headers
+      })
       .then(res => {
         let newTasks = {};
-        res.data.tasks.forEach((task) => newTasks[task._id] = task)
+        res.data.tasks.forEach(task => (newTasks[task._id] = task));
         const newState = {
           ...this.state,
           tasks: {
             ...newTasks
           }
-        }
-        this.setState(newState)
+        };
+        this.setState(newState);
       })
       .catch(err => console.log(err));
   };
@@ -266,13 +274,13 @@ class App extends React.Component {
       columnId: newColumn._id,
       title: newColumn.title,
       taskIds: newColumn.taskIds
-    }
+    };
     axios
-    .patch(`http://localhost:3001/boards/columns`, data, { headers: headers })
-    .then(res => {
-      console.log(res)
-    })
-    .catch(err => console.log(err))
+      .patch(`http://localhost:3001/boards/columns`, data, { headers: headers })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => console.log(err));
     this.setState(newState);
   };
 

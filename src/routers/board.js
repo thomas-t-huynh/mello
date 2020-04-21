@@ -40,10 +40,11 @@ router.post('/boards', auth, async (req, res) => {
     }
 })
 
-router.patch('/boards/:id', auth, async (req, res) => {
-    const _id = req.params.id;
+router.patch('/boards', auth, async (req, res) => {
+    const _id = req.body._id;
+    console.log(req.body)
     const update = Object.keys(req.body)[0]
-    const allowedUpdates = ['userIds', 'owner', 'columnIds']
+    const allowedUpdates = ['userIds', 'owner', 'columnIds', 'title']
     const isValidOperation = allowedUpdates.includes(update)
     if (!isValidOperation) {
         return res.status(400).send({ error: 'Invalid update' })
@@ -58,6 +59,8 @@ router.patch('/boards/:id', auth, async (req, res) => {
             board[update].push({ userId: req.body.userIds})
         } else if (update === 'columnIds') {
             board[update].push({ columnId: req.body.columnIds})
+        } else if (update === 'title') {
+            board[update] = req.body.title
         } else {
             board[update] = req.body.owner
         }

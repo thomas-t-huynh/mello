@@ -47,7 +47,7 @@ const BoardTitle = ({
     if (board) {
       console.log("yes");
       const editedBoard = {
-        id: boards[board].id,
+        _id: boards[board]._id,
         title: boardTitle
       };
       setEdit(false);

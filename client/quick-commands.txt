@@ -1,0 +1,2 @@
+cd ../../../mongodb/mongodb/bin
+mongod.exe --dbpath="c:/users/thomas huynh/mello-data"
