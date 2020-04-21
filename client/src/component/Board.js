@@ -93,7 +93,7 @@ class Board extends React.Component {
                     [newColumn._id]: newColumn
                 }
             };
-            this.props.reorderTasks(newState);
+            this.props.reorderTasks(newState, newColumn);
             return;
         }
 

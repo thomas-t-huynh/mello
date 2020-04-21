@@ -47,8 +47,8 @@ router.post('/boards/:boardId/columns', auth, async (req, res) => {
     }
 })
 
-router.patch('/boards/:boardId/columns/:columnId', auth, async (req, res) => {
-    const columnId = req.params.columnId
+router.patch('/boards/columns', auth, async (req, res) => {
+    const columnId = req.body.columnId
     
     try {
         const column = await Column.findOne({ _id: columnId })
@@ -57,8 +57,8 @@ router.patch('/boards/:boardId/columns/:columnId', auth, async (req, res) => {
             return res.status(404).send()
         }
 
-        column["title"] = req.body.columnTitle
-
+        column["title"] = req.body.title
+        column["taskIds"] = req.body.taskIds
         await column.save()
         res.status(200).send({ column })
     } catch(e) {

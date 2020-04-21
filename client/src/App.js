@@ -99,6 +99,7 @@ class App extends React.Component {
   };
   addBoard = (title, editedBoard = undefined) => {
     if (editedBoard) {
+      axios.patch(`http://localhost:3001/`)
       let editedState = this.state;
       editedState.boards[editedBoard.id].title = editedBoard.title;
       this.setState(editedState);
@@ -256,7 +257,22 @@ class App extends React.Component {
       .catch(err => console.log(err));
   };
 
-  reorderTasks = newState => {
+  reorderTasks = (newState, newColumn) => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.state.account.token
+    };
+    const data = {
+      columnId: newColumn._id,
+      title: newColumn.title,
+      taskIds: newColumn.taskIds
+    }
+    axios
+    .patch(`http://localhost:3001/boards/columns`, data, { headers: headers })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => console.log(err))
     this.setState(newState);
   };
 
