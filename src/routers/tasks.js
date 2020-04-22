@@ -42,12 +42,10 @@ router.post('/boards/columns/tasks', auth,  async (req, res) => {
     }
 })
 
-router.patch('/boards/:boardId/columns/:columnId/tasks/:taskId', auth, async (req, res) => {
-    const taskId = req.params.taskId
-
+router.patch('/boards/columns/tasks', auth, async (req, res) => {
+    const taskId = req.body._id
     try {
         const task = await Task.findOne({ _id: taskId })
-        
         if (!task) {
             res.status(404).send()
         }

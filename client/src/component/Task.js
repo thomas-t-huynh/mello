@@ -74,7 +74,7 @@ export default class Task extends React.Component {
 
   checkIfTaskExists = keyValue => {
     if (this.props.task) {
-      this.props.handleAddTask(this.props.task.id, keyValue);
+      this.props.handleAddTask(this.props.task._id, keyValue);
       this.setState({ edit: false });
     } else {
       this.props.handleAddTask(undefined, keyValue);

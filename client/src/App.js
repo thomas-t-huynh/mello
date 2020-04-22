@@ -105,7 +105,6 @@ class App extends React.Component {
     if (editedBoard) {
       axios.patch(`http://localhost:3001/boards`, { title: title, _id: editedBoard._id }, { headers })
       .then(res => {
-        console.log(res)
         let editedState = this.state;
         editedState.boards[editedBoard._id].title = editedBoard.title;
         this.setState(editedState);
@@ -155,16 +154,25 @@ class App extends React.Component {
   };
 
   addColumn = (boardId, columnTitle, columnId = undefined) => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.state.account.token
+    };
     if (columnId) {
+      const data = {
+        _id: columnId,
+        title: columnTitle
+      }
+      axios.patch(`http://localhost:3001/boards/columns`, data, { headers })
+      .then(res => {
+        // console.log(res)
+      })
+      .catch(err => console.log(err))
       let editedState = this.state;
       editedState.columns[columnId].title = columnTitle;
       this.setState(editedState);
       return;
     }
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: this.state.account.token
-    };
     axios
       .post(
         `http://localhost:3001/boards/${boardId}/columns`,
@@ -191,17 +199,23 @@ class App extends React.Component {
   };
 
   addTask = (boardId, columnId, taskDescription, taskId = undefined) => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.state.account.token
+    };
     if (taskId) {
+      const data = {
+        _id: taskId,
+        content: taskDescription
+      }
+      axios.patch(`http://localhost:3001/boards/columns/tasks`, data, { headers })
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
       const editedState = this.state;
       editedState.tasks[taskId].content = taskDescription;
       this.setState(editedState);
       return;
     }
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: this.state.account.token
-    };
-
     const data = {
       content: taskDescription,
       columnId,
@@ -236,7 +250,6 @@ class App extends React.Component {
             }
           }
         };
-        console.log(newState);
         this.setState(newState);
       })
       .catch(err => console.log(err));
@@ -271,16 +284,15 @@ class App extends React.Component {
       Authorization: this.state.account.token
     };
     const data = {
-      columnId: newColumn._id,
+      _id: newColumn._id,
       title: newColumn.title,
       taskIds: newColumn.taskIds
     };
     axios
-      .patch(`http://localhost:3001/boards/columns`, data, { headers: headers })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => console.log(err));
+    .patch(`http://localhost:3001/boards/columns`, data, { headers: headers })
+    .then(res => {
+    })
+    .catch(err => console.log(err));
     this.setState(newState);
   };
 
@@ -293,7 +305,7 @@ class App extends React.Component {
   };
 
   render() {
-    console.log(`app,js`, this.state);
+    console.log(`app.js: `, this.state);
     return (
       <Router>
         <Header />

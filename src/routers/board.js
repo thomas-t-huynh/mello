@@ -41,8 +41,7 @@ router.post('/boards', auth, async (req, res) => {
 })
 
 router.patch('/boards', auth, async (req, res) => {
-    const _id = req.body._id;
-    console.log(req.body)
+    const boardId = req.body._id;
     const update = Object.keys(req.body)[0]
     const allowedUpdates = ['userIds', 'owner', 'columnIds', 'title']
     const isValidOperation = allowedUpdates.includes(update)
@@ -50,7 +49,7 @@ router.patch('/boards', auth, async (req, res) => {
         return res.status(400).send({ error: 'Invalid update' })
     }
     try {
-        const board = await Board.findOne({ _id: _id })
+        const board = await Board.findOne({ _id: boardId })
 
         if (!board) {
             return res.status(404).send()
