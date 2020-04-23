@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Task from "./Task";
-import { Droppable } from "react-beautiful-dnd";
+import { Droppable, Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div`
   margin: 8px;
@@ -97,45 +97,43 @@ export default class Column extends React.Component {
 
   renderTaskList = () => {
     return (
-      <div>
-        <Droppable
-          droppableId={this.props.column._id}
-          // type={this.props.column.id === "column-3" ? "done" : "active"}
-          // isDropDisabled={this.props.isDropDisabled}
-        >
-          {(provided, snapshot) => (
-            <TaskList
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              isDraggingOver={snapshot.isDraggingOver}
-            >
-              {this.props.tasks.map((task, index) => (
-                <Task
-                  key={task._id}
-                  task={task}
-                  index={index}
-                  preTask={this.state.preTask}
-                  taskDescription={this.state.taskDescription}
-                  setTaskDescription={this.setTaskDescription}
-                  handleAddTask={this.handleAddTask}
-                />
-              ))}
-              {provided.placeholder}
-              {this.state.preTask && (
-                <Task
-                  preTask={this.state.preTask}
-                  taskDescription={this.state.taskDescription}
-                  setTaskDescription={this.setTaskDescription}
-                  handleAddTask={this.handleAddTask}
-                />
-              )}
-            </TaskList>
-          )}
-        </Droppable>
-        <Button onClick={() => this.setState({ preTask: true })}>
-          <span>+</span>Add another card
-        </Button>
-      </div>
+        <div>
+          <Droppable
+            droppableId={this.props.column._id}
+          >
+            {(provided, snapshot) => (
+              <TaskList
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                isDraggingOver={snapshot.isDraggingOver}
+              >
+                {this.props.tasks.map((task, index) => (
+                  <Task
+                    key={task._id}
+                    task={task}
+                    index={index}
+                    preTask={this.state.preTask}
+                    taskDescription={this.state.taskDescription}
+                    setTaskDescription={this.setTaskDescription}
+                    handleAddTask={this.handleAddTask}
+                  />
+                ))}
+                {provided.placeholder}
+                {this.state.preTask && (
+                  <Task
+                    preTask={this.state.preTask}
+                    taskDescription={this.state.taskDescription}
+                    setTaskDescription={this.setTaskDescription}
+                    handleAddTask={this.handleAddTask}
+                  />
+                )}
+              </TaskList>
+            )}
+          </Droppable>
+          <Button onClick={() => this.setState({ preTask: true })}>
+            <span>+</span>Add another card
+          </Button>
+        </div>
     );
   };
 
@@ -157,12 +155,24 @@ export default class Column extends React.Component {
       );
     } else {
       return (
-        <Container>
-          <Title onClick={() => this.handleSetEdit()}>
-            {this.props.column.title}
-          </Title>
-          {this.renderTaskList()}
-        </Container>
+        <Draggable
+          draggableId={this.props.column._id}
+          index={this.props.index}
+        >
+          {(provided, snapshot) => (
+            <Container
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              isDragging={snapshot.isDragging}
+            >
+              <Title onClick={() => this.handleSetEdit()}>
+                {this.props.column.title}
+              </Title>
+              {this.renderTaskList()}
+            </Container>
+          )}
+        </Draggable>
       );
     }
   }

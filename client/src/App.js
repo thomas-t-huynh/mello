@@ -309,6 +309,23 @@ class App extends React.Component {
     }
   };
 
+  reorderColumns = (newState, newBoard) => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.state.account.token
+    };
+    const data = {
+      columnIds: newBoard.columnIds,
+      _id: newBoard._id
+    }
+    axios.patch('http://localhost:3001/boards', data, { headers })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => console.log(err))
+    this.setState(newState);
+  }
+
   setUserAccount = accountInfo => {
     this.setState({ account: accountInfo });
   };
@@ -344,6 +361,7 @@ class App extends React.Component {
             path="/board/:boardId"
             render={props => (
               <Board
+                reorderColumns={this.reorderColumns}
                 reorderTasks={this.reorderTasks}
                 boardData={this.state}
                 addColumn={this.addColumn}

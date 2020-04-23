@@ -50,14 +50,13 @@ router.patch('/boards', auth, async (req, res) => {
     }
     try {
         const board = await Board.findOne({ _id: boardId })
-
         if (!board) {
             return res.status(404).send()
         }
         if (update === 'userIds') {
             board[update].push({ userId: req.body.userIds})
         } else if (update === 'columnIds') {
-            board[update].push({ columnId: req.body.columnIds})
+            board[update] = req.body.columnIds
         } else if (update === 'title') {
             board[update] = req.body.title
         } else {

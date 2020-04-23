@@ -1,7 +1,7 @@
 import React from "react";
 import "@atlaskit/css-reset";
 import styled from "styled-components";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -62,10 +62,39 @@ class Board extends React.Component {
     }
 
     onDragEnd = result => {
+        const { destination, destination: { droppableId }, source, draggableId } = result;
+        if (result.type === "column") {
+            console.log(result)
+            if (!destination) {
+                return;
+            }
+            if (
+                destination.droppableId === source.droppableId &&
+                destination.index === source.index
+            ) {
+                return;
+            }
+            const newColumnIds = this.props.boardData.boards[droppableId].columnIds
+            newColumnIds.splice(source.index, 1)
+            newColumnIds.splice(destination.index, 0, { columnId: draggableId })
+
+            const newBoard = {
+                ...this.props.boardData.boards[droppableId],
+                columnIds: newColumnIds
+            }
+            const newState = {
+                ...this.props.boardData,
+                boards: {
+                    ...this.props.boardData.boards,
+                    [droppableId]: newBoard
+                }
+            }
+            this.props.reorderColumns(newState, newBoard)
+            return
+        } 
         const { columns } = this.props.boardData;
         document.body.style.color = "inherit";
-        const { destination, source, draggableId } = result;
-
+        
         if (!destination) {
             return;
         }
@@ -154,42 +183,52 @@ class Board extends React.Component {
                     onDragStart={this.onDragStart}
                     onDragEnd={this.onDragEnd}
                 >
-                    <Container>
-                        {(boards[boardId].columnIds && tasks) &&
-                            boards[boardId].columnIds.map((columnId, index) => {
-                                const column = columns[columnId.columnId];
-                                const columnTasks = column.taskIds.map(
-                                    ({ taskId }) => tasks[taskId]
-                                );
-                                // const isDropDisabled = index < this.state.homeIndex;
-                                return (
+                    <Droppable droppableId={boardId} direction="horizontal" type="column">
+                        {(provided, snapshot) => (
+                            <Container
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                isDraggingOver={snapshot.isDraggingOver}
+                            >
+                                {(boards[boardId].columnIds && tasks) &&
+                                    boards[boardId].columnIds.map((columnId, index) => {
+                                        const column = columns[columnId.columnId];
+                                        const columnTasks = column.taskIds.map(
+                                            ({ taskId }, index) => tasks[taskId]
+                                        );
+                                        // const isDropDisabled = index < this.state.homeIndex;
+                                        return (
+                                            <Column
+                                                key={column._id}
+                                                index={index}
+                                                column={column}
+                                                tasks={columnTasks}
+                                                addTask={this.props.addTask}
+                                                columnTitle={this.state.columnTitle}
+                                                setColumnTitle={this.setColumnTitle}
+                                                handleAddColumn={this.handleAddColumn}
+                                                boardId={boardId}
+                                                // isDropDisabled={isDropDisabled}
+                                            />
+                                        );
+                                    })}
+                                {provided.placeholder}
+                                {this.state.preColumn ? (
                                     <Column
-                                        key={column._id}
-                                        column={column}
-                                        tasks={columnTasks}
-                                        addTask={this.props.addTask}
+                                        preColumn={this.state.preColumn}
                                         columnTitle={this.state.columnTitle}
                                         setColumnTitle={this.setColumnTitle}
                                         handleAddColumn={this.handleAddColumn}
-                                        boardId={boardId}
-                                        // isDropDisabled={isDropDisabled}
                                     />
-                                );
-                            })}
-                        {this.state.preColumn ? (
-                            <Column
-                                preColumn={this.state.preColumn}
-                                columnTitle={this.state.columnTitle}
-                                setColumnTitle={this.setColumnTitle}
-                                handleAddColumn={this.handleAddColumn}
-                            />
-                        ) : null}
-                        <AddColumnButton
-                            onClick={() => this.setState({ preColumn: true })}
-                        >
-                            <span>+</span>Add a column
-                        </AddColumnButton>
-                    </Container>
+                                ) : null}
+                                <AddColumnButton
+                                    onClick={() => this.setState({ preColumn: true })}
+                                >
+                                    <span>+</span>Add a column
+                                </AddColumnButton>
+                            </Container>
+                        )}
+                    </Droppable>
                 </DragDropContext>
             );
         } else {
