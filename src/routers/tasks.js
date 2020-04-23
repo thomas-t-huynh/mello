@@ -57,29 +57,29 @@ router.patch('/boards/columns/tasks', auth, async (req, res) => {
     }
 })
 
-router.patch('/boards/:boardId/columns/:columnId/tasks', auth, async (req, res) => {
-    const columnId = req.params.columnId
-    const sourceIndex = req.body.sourceIndex
-    const destinationIndex = req.body.destinationIndex
-    try {
-        const column = await Column.findOne({ _id: columnId })
+// router.patch('/boards/:boardId/columns/:columnId/tasks', auth, async (req, res) => {
+//     const columnId = req.params.columnId
+//     const sourceIndex = req.body.sourceIndex
+//     const destinationIndex = req.body.destinationIndex
+//     try {
+//         const column = await Column.findOne({ _id: columnId })
 
-        if (!column) {
-            res.status(404).send()
-        }
-        console.log(column.taskIds)
-        const  sourceId = column.taskIds[sourceIndex]
+//         if (!column) {
+//             res.status(404).send()
+//         }
+//         console.log(column.taskIds)
+//         const  sourceId = column.taskIds[sourceIndex]
 
-        column.taskIds.splice(sourceIndex, 1)
-        column.taskIds.splice(destinationIndex, 0, sourceId)
+//         column.taskIds.splice(sourceIndex, 1)
+//         column.taskIds.splice(destinationIndex, 0, sourceId)
 
-        await column.save()
+//         await column.save()
 
-        res.status(200).send({ column })
-    } catch (e) {
-        res.status(400).send(e)
-    }
-})
+//         res.status(200).send({ column })
+//     } catch (e) {
+//         res.status(400).send(e)
+//     }
+// })
 
 
 // GET /tasks?completed=true

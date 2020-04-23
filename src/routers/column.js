@@ -48,23 +48,42 @@ router.post('/boards/:boardId/columns', auth, async (req, res) => {
 })
 
 router.patch('/boards/columns', auth, async (req, res) => {
-    const columnId = req.body._id
-    
-    try {
-        const column = await Column.findOne({ _id: columnId })
-        if (!column) {
-            return res.status(404).send()
+    if (!req.body.endData) {
+        const columnId = req.body._id
+        try {
+            const column = await Column.findOne({ _id: columnId })
+            if (!column) {
+                return res.status(404).send()
+            }
+            column["title"] = req.body.title
+            if (req.body.taskIds) {
+                column["taskIds"] = req.body.taskIds
+            }
+            await column.save()
+            res.status(200).send({ column })
+        } catch(e) {
+            res.status(400).send(e)
         }
-
-        column["title"] = req.body.title
-        if (req.body.taskIds) {
-            column["taskIds"] = req.body.taskIds
+    } else {
+        const { startData, endData } = req.body;
+        const startId = startData._id
+        const endId = endData._id
+        try {
+            const startColumn = await Column.findOne({ _id: startId })
+            const endColumn = await Column.findOne({ _id: endId })
+            if (!startColumn && !endColumn) {
+                return res.status(404).send()
+            }
+            startColumn["taskIds"] = startData.taskIds
+            endColumn["taskIds"] = endData.taskIds
+            await startColumn.save()
+            await endColumn.save()
+            res.status(200).send({ startColumn, endColumn })
+        } catch(e) {
+            res.status(400).send(e)
         }
-        await column.save()
-        res.status(200).send({ column })
-    } catch(e) {
-        res.status(400).send(e)
     }
+
 })
 
 router.delete('/boards/:boardId/columns/:columnId', auth, async (req, res) => {

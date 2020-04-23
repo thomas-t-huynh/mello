@@ -120,7 +120,7 @@ class Board extends React.Component {
                 [newFinish._id]: newFinish
             }
         };
-        this.props.reorderTasks(newState);
+        this.props.reorderTasks(newState, newStart, newFinish);
     };
 
     setColumnTitle = e => {
