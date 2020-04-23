@@ -278,22 +278,35 @@ class App extends React.Component {
       .catch(err => console.log(err));
   };
 
-  reorderTasks = (newState, newColumn) => {
+  reorderTasks = (newState, startColumn, endColumn=undefined) => {
     const headers = {
       "Content-Type": "application/json",
       Authorization: this.state.account.token
     };
-    const data = {
-      _id: newColumn._id,
-      title: newColumn.title,
-      taskIds: newColumn.taskIds
+    const startData = {
+      _id: startColumn._id,
+      title: startColumn.title,
+      taskIds: startColumn.taskIds
     };
-    axios
-    .patch(`http://localhost:3001/boards/columns`, data, { headers: headers })
-    .then(res => {
-    })
-    .catch(err => console.log(err));
-    this.setState(newState);
+    if (!endColumn) {
+      axios
+      .patch(`http://localhost:3001/boards/columns`, startData, { headers: headers })
+      .then(res => {
+      })
+      .catch(err => console.log(err));
+      this.setState(newState);
+    } else {
+      const endData = {
+        _id: endColumn._id,
+        title: endColumn.title,
+        taskIds: endColumn.taskIds
+      }
+      axios
+      .patch(`http://localhost:3001/boards/columns`, { startData: startData, endData: endData }, { headers })
+      .then(res => { console.log(res)})
+      .catch(err => console.log(err))
+      this.setState(newState)
+    }
   };
 
   setUserAccount = accountInfo => {

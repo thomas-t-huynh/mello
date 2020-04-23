@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const Container = styled.div`
-  background: #5c8a8a;
+  background: black;
   color: white;
   padding: 5px 0;
   display: flex;
@@ -17,7 +17,7 @@ const Container = styled.div`
 `;
 
 const AppTitle = styled.div`
-  opacity: 0.7;
+  opacity: 1;
   margin: 0 auto;
   img {
     filter: invert(100%);
@@ -35,7 +35,7 @@ const HomeButton = styled.button`
   cursor: pointer;
   height: 100%;
   border: none;
-  background: #75a3a3;
+  background: #262626;
   opacity: 0.7;
   color: white;
   font-weight: 600;
@@ -50,7 +50,7 @@ const HomeButton = styled.button`
     margin-right: 10px;
   }
   &:hover {
-    background: #669999;
+    opacity: 1;
   }
 `;
 

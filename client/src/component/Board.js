@@ -33,6 +33,10 @@ const AddColumnButton = styled.button`
     }
 `;
 
+const LoadingImg = styled.img`
+    margin: 50px auto;
+`
+
 class Board extends React.Component {
     constructor(props) {
         super(props);
@@ -189,7 +193,7 @@ class Board extends React.Component {
                 </DragDropContext>
             );
         } else {
-          return <Container><h2>Loading...</h2></Container>
+          return <Container><LoadingImg src={require("../assets/loading.gif")}/></Container>
         }
     }
 }
