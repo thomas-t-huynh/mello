@@ -5,6 +5,16 @@ import { Link, useHistory } from "react-router-dom";
 
 import UserInfoForm from "./component/UserInfoForm";
 
+const Container = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    a {
+        color: dodgerblue;
+    }
+`
 
 const Login = ({ setUserAccount }) => {
     const History = useHistory()
@@ -35,10 +45,10 @@ const Login = ({ setUserAccount }) => {
     }
 
     return (
-        <div>
+        <Container>
             <UserInfoForm  header={"Login"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} name={name} email={email} password={password} />
             <Link to="/signup">Didn't sign up yet? Click here</Link>
-        </div>
+        </Container>
     );
 };
 

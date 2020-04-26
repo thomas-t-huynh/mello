@@ -1,8 +1,20 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import UserInfoForm from "./component/UserInfoForm";
+
+const Container = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    a {
+        color: dodgerblue;
+    }
+`
+
 
 const SignUp = ({ setUserAccount }) => {
     const [ accountInfo, setAccountInfo ] = useState({
@@ -33,9 +45,10 @@ const SignUp = ({ setUserAccount }) => {
     }
 
     return (
-        <div>
+        <Container>
             <UserInfoForm header={"Signup"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} name={name} email={email} password={password} />
-        </div>
+            <Link to="/">Want to login instead? Click here.</Link>
+        </Container>
     );
 };
 
