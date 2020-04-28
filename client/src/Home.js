@@ -25,6 +25,12 @@ const Container = styled.div`
   }
 `;
 
+
+const LoadingImg = styled.img`
+    margin: 50px auto;
+`
+
+
 const Home = ({ boardOrder, boards, addBoard, clearColumnsAndTasks, columns }) => {
   const [preBoard, setPreBoard] = useState(false);
   const [boardTitle, setBoardTitle] = useState("");
@@ -43,6 +49,7 @@ const Home = ({ boardOrder, boards, addBoard, clearColumnsAndTasks, columns }) =
 
   return (
     <HomeContainer>
+    {!boardOrder && <LoadingImg src={require("./assets/loading.gif")}/>}
       {boardOrder && boardOrder.map(board => {
         return (
           <BoardTitle

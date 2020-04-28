@@ -39,7 +39,9 @@ class App extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.account !== this.state.account) {
-      this.getBoards();
+      if (Object.keys(this.state.account).length > 0) {
+        this.getBoards();
+      }
     }
   }
 
@@ -338,7 +340,7 @@ class App extends React.Component {
     console.log(`app.js: `, this.state);
     return (
       <Router>
-        <Header />
+        <Header boards={this.state.boards} token={this.state.account.token} removeAccount={() => this.setState({ ...initialData })} />
         <Switch>
           <Route
             exact

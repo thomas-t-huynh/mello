@@ -24,16 +24,24 @@ const Container = styled.div`
       display: flex;
       justify-content: space-between;
       width: 250px;
+    }
+    input {
+      border-radius: 5px;
     } 
     button {
-        margin: 20px 0;
-      width: 150px;
+      margin: 20px 0;
+      width: 75px;
       background: dodgerblue;
       border: none;
       color: white;
       font-weight: 600;
       padding: 10px 0;
-      border-radius: 10px;
+      border-radius: 5px;
+      opacity: 0.7;
+      cursor: pointer;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 `;

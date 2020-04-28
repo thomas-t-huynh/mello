@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Container = styled.div`
   background: black;
@@ -31,7 +32,7 @@ const AppTitle = styled.div`
   }
 `;
 
-const HomeButton = styled.button`
+const Button = styled.button`
   cursor: pointer;
   height: 100%;
   border: none;
@@ -54,19 +55,48 @@ const HomeButton = styled.button`
   }
 `;
 
-const Header = () => {
+const LogoutButton = styled(Button)`
+  margin-right: 5px;
+  margin-left: 0;
+`;
+
+
+const Header = ({ boards, token, removeAccount }) => {
+
+  const handleLogout = () => {
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": token
+    };
+    axios.post('http://localhost:3001/users/logoutAll', undefined, { headers })
+    .then(res => {
+      console.log(res)
+      removeAccount();
+      window.localStorage.removeItem("mello-user")
+    })
+    .catch(err => console.log(err))
+  }
+
+
   return (
     <Container>
-      <Link to="/">
-        <HomeButton>
+      {boards && (
+      <Link to="/board">
+        <Button>
           <img src={require("../images/home.png")} />
           Home
-        </HomeButton>
+        </Button>
       </Link>
+      )}
       <AppTitle>
         <img src={require("../images/marshmallow.png")} />
         <h1>Mello</h1>
       </AppTitle>
+      {boards && (
+        <Link to="/" onClick={() => handleLogout()}>
+          <LogoutButton>Logout</LogoutButton>
+        </Link>
+      )}
     </Container>
   );
 };

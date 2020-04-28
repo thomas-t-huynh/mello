@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 const Container = styled.div`
   margin: 8px;
-  border: 1px solid lightgrey;
   border-radius: 5px;
   width: 150px;
   height: 75px;
@@ -12,10 +11,19 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #d9d9d9;
-  color: #808080;
+  background: #1a1a1a;
+  opacity: 0.7;
   &:hover {
-    background: #e6e6e6;
+    opacity: 1;
+  }
+  a {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    &:hover {
+      text-decoration: none;
+      color: dodgerblue;
+    }
   }
 `;
 
@@ -23,6 +31,11 @@ const EditButton = styled.button`
   width: 30px;
   float: right;
   margin-left: 120px;
+    background: #1a1a1a;
+  opacity: 0.7;
+  border: none;
+  color: white;
+  font-size: 20px;
 `;
 
 const TitleInput = styled.textarea`
@@ -31,6 +44,10 @@ const TitleInput = styled.textarea`
   margin: 0 auto;
   resize: none;
   border: none;
+  background: #1a1a1a;
+  color: white;
+      font-size: 18px;
+    font-weight: 600;
 `;
 
 const BoardTitle = ({
