@@ -29,7 +29,7 @@ class App extends React.Component {
         Authorization: token
       };
       axios
-        .get(`http://localhost:3001/users/me`, { headers })
+        .get(`https://mello-backend.herokuapp.com/users/me`, { headers })
         .then(res => {
           this.setUserAccount({ ...res.data, token });
         })
@@ -52,7 +52,7 @@ class App extends React.Component {
     };
     // console.log('fetching boards....')
     axios
-      .get(`http://localhost:3001/boards`, {
+      .get(`https://mello-backend.herokuapp.com/boards`, {
         headers: headers
       })
       .then(res => {
@@ -74,7 +74,7 @@ class App extends React.Component {
         Authorization: this.state.account.token
       };
       axios
-        .get(`http://localhost:3001/boards/${boardId}/columns`, {
+        .get(`https://mello-backend.herokuapp.com/boards/${boardId}/columns`, {
           headers: headers
         })
         .then(res => {
@@ -105,7 +105,7 @@ class App extends React.Component {
       Authorization: this.state.account.token
     };
     if (editedBoard) {
-      axios.patch(`http://localhost:3001/boards`, { title: title, _id: editedBoard._id }, { headers })
+      axios.patch(`https://mello-backend.herokuapp.com/boards`, { title: title, _id: editedBoard._id }, { headers })
       .then(res => {
         let editedState = this.state;
         editedState.boards[editedBoard._id].title = editedBoard.title;
@@ -115,7 +115,7 @@ class App extends React.Component {
     } else {
       axios
         .post(
-          `http://localhost:3001/boards`,
+          `https://mello-backend.herokuapp.com/boards`,
           { title: title },
           {
             headers: headers
@@ -165,7 +165,7 @@ class App extends React.Component {
         _id: columnId,
         title: columnTitle
       }
-      axios.patch(`http://localhost:3001/boards/columns`, data, { headers })
+      axios.patch(`https://mello-backend.herokuapp.com/boards/columns`, data, { headers })
       .then(res => {
         // console.log(res)
       })
@@ -177,7 +177,7 @@ class App extends React.Component {
     }
     axios
       .post(
-        `http://localhost:3001/boards/${boardId}/columns`,
+        `https://mello-backend.herokuapp.com/boards/${boardId}/columns`,
         { title: columnTitle },
         {
           headers: headers
@@ -210,7 +210,7 @@ class App extends React.Component {
         _id: taskId,
         content: taskDescription
       }
-      axios.patch(`http://localhost:3001/boards/columns/tasks`, data, { headers })
+      axios.patch(`https://mello-backend.herokuapp.com/boards/columns/tasks`, data, { headers })
       .then(res => console.log(res))
       .catch(err => console.log(err))
       const editedState = this.state;
@@ -224,7 +224,7 @@ class App extends React.Component {
       boardId
     };
     axios
-      .post(`http://localhost:3001/boards/columns/tasks`, data, {
+      .post(`https://mello-backend.herokuapp.com/boards/columns/tasks`, data, {
         headers: headers
       })
       .then(res => {
@@ -263,7 +263,7 @@ class App extends React.Component {
       Authorization: this.state.account.token
     };
     axios
-      .get(`http://localhost:3001/boards/${boardId}/columns/tasks`, {
+      .get(`https://mello-backend.herokuapp.com/boards/${boardId}/columns/tasks`, {
         headers: headers
       })
       .then(res => {
@@ -292,7 +292,7 @@ class App extends React.Component {
     };
     if (!endColumn) {
       axios
-      .patch(`http://localhost:3001/boards/columns`, startData, { headers: headers })
+      .patch(`https://mello-backend.herokuapp.com/boards/columns`, startData, { headers: headers })
       .then(res => {
       })
       .catch(err => console.log(err));
@@ -304,7 +304,7 @@ class App extends React.Component {
         taskIds: endColumn.taskIds
       }
       axios
-      .patch(`http://localhost:3001/boards/columns`, { startData: startData, endData: endData }, { headers })
+      .patch(`https://mello-backend.herokuapp.com/boards/columns`, { startData: startData, endData: endData }, { headers })
       .then(res => { console.log(res)})
       .catch(err => console.log(err))
       this.setState(newState)
@@ -320,7 +320,7 @@ class App extends React.Component {
       columnIds: newBoard.columnIds,
       _id: newBoard._id
     }
-    axios.patch('http://localhost:3001/boards', data, { headers })
+    axios.patch('https://mello-backend.herokuapp.com/boards', data, { headers })
     .then(res => {
       console.log(res)
     })

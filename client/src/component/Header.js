@@ -68,7 +68,7 @@ const Header = ({ boards, token, removeAccount }) => {
       "Content-Type": "application/json",
       "Authorization": token
     };
-    axios.post('http://localhost:3001/users/logoutAll', undefined, { headers })
+    axios.post('https://mello-backend.herokuapp.com/users/logoutAll', undefined, { headers })
     .then(res => {
       console.log(res)
       removeAccount();

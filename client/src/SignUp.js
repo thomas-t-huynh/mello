@@ -31,7 +31,7 @@ const SignUp = ({ setUserAccount }) => {
     const handleOnSubmit = e => {
         e.preventDefault()
         axios
-            .post(`http://localhost:3001/users`, { 
+            .post(`https://mello-backend.herokuapp.com/users`, { 
                 "name": name,
                 "email": email,
                 "password": password
