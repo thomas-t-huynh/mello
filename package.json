@@ -4,7 +4,7 @@
   "description": "A more mellow trello",
   "main": "server.js",
   "scripts": {
-    "start": "env-cmd src/index.js",
+    "start": "env-cmd ./config/dev.env node src/index.js",
     "dev": "env-cmd ./config/dev.env nodemon src/index.js"
   },
   "author": "Thomas Huynh",
