@@ -18,9 +18,9 @@ const Container = styled.div`
 
 const SignUp = ({ setUserAccount }) => {
     const [ accountInfo, setAccountInfo ] = useState({
-        name: "thomy",
-        email: "thomy@domain.com",
-        password: "notagoodpw"
+        name: "",
+        email: "",
+        password: ""
     })
     const History = useHistory();
     const { name, email, password } = accountInfo;

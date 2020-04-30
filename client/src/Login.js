@@ -19,9 +19,9 @@ const Container = styled.div`
 const Login = ({ setUserAccount }) => {
     const History = useHistory()
     const [ accountInfo, setAccountInfo ] = useState({
-        name: "thomy",
-        email: "thomy@domain.com",
-        password: "notagoodpw"
+        name: "",
+        email: "",
+        password: ""
     })
     const { name, email, password } = accountInfo;
     const handleOnChange = e => {
