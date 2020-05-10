@@ -19,10 +19,10 @@ const Container = styled.div`
 const Login = ({ setUserAccount }) => {
     const History = useHistory()
     const [ accountInfo, setAccountInfo ] = useState({
-        name: "",
         email: "",
         password: ""
     })
+    const [ error, setError ] = useState("")
     const { name, email, password } = accountInfo;
     const handleOnChange = e => {
         setAccountInfo({...accountInfo, [e.target.name]: e.target.value})
@@ -32,7 +32,6 @@ const Login = ({ setUserAccount }) => {
         e.preventDefault()
         axios
             .post(`https://mello-backend.herokuapp.com/users/login`, { 
-                "name": name,
                 "email": email,
                 "password": password
              })
@@ -46,7 +45,7 @@ const Login = ({ setUserAccount }) => {
 
     return (
         <Container>
-            <UserInfoForm  header={"Login"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} name={name} email={email} password={password} />
+            <UserInfoForm  header={"Login"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} fields={['email', 'password']} error={error} accountInfo={accountInfo} />
             <Link to="/signup">Didn't sign up yet? Click here</Link>
         </Container>
     );

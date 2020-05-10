@@ -23,6 +23,8 @@ const SignUp = ({ setUserAccount }) => {
         password: ""
     })
     const History = useHistory();
+    const [ error, setError ] = useState("")
+
     const { name, email, password } = accountInfo;
     const handleOnChange = e => {
         setAccountInfo({...accountInfo, [e.target.name]: e.target.value})
@@ -37,7 +39,7 @@ const SignUp = ({ setUserAccount }) => {
                 "password": password
              })
             .then((res) => {
-                console.log(res.data)
+                window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
                 setUserAccount(res.data)
                 History.push("/board")
             })
@@ -46,7 +48,7 @@ const SignUp = ({ setUserAccount }) => {
 
     return (
         <Container>
-            <UserInfoForm header={"Signup"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} name={name} email={email} password={password} />
+            <UserInfoForm header={"Signup"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} fields={['name', 'email', 'password']} error={error} accountInfo={accountInfo} />
             <Link to="/">Want to login instead? Click here.</Link>
         </Container>
     );
