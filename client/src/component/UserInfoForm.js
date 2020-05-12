@@ -65,7 +65,7 @@ const UserInfoForm = ({
           <label key={i}>
             {field.charAt(0).toUpperCase() + field.slice(1)}:
             <input
-              type="text"
+              type={field === "password" ? "password" : "text"}
               placeholder={field}
               value={accountInfo[field]}
               name={field}
