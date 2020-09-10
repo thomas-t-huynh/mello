@@ -54,13 +54,14 @@ const UserInfoForm = ({
   fields,
   handleOnChange,
   header,
-  accountInfo
+  accountInfo,
+  error
 }) => {
   return (
     <Container>
       <form onSubmit={e => handleOnSubmit(e)}>
         <h2>{header}</h2>
-        <ErrorMessage></ErrorMessage>
+        <ErrorMessage>{error}</ErrorMessage>
         {fields.map((field, i) => (
           <label key={i}>
             {field.charAt(0).toUpperCase() + field.slice(1)}:

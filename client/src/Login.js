@@ -23,24 +23,28 @@ const Login = ({ setUserAccount }) => {
         password: ""
     })
     const [ error, setError ] = useState("")
-    const { name, email, password } = accountInfo;
+    const { email, password } = accountInfo;
     const handleOnChange = e => {
         setAccountInfo({...accountInfo, [e.target.name]: e.target.value})
     }
-
+// https://mello-backend.herokuapp.com/users/login
     const handleOnSubmit = e => {
         e.preventDefault()
         axios
-            .post(`https://mello-backend.herokuapp.com/users/login`, { 
+            .post(`http://localhost:3001/users/login`, { 
                 "email": email,
                 "password": password
              })
             .then((res) => {
                 setUserAccount(res.data)
+                setError("")
                 window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
                 History.push("/board")
             })
-            .catch((e) => console.log(e))
+            .catch((e) => {
+                console.log({...e})
+                if (e.response){ setError(e.response.data) }
+            })
     }
 
     return (
