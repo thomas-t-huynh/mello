@@ -59,10 +59,9 @@ const BoardTitle = ({
   preBoard
 }) => {
   const [edit, setEdit] = useState(preBoard);
-
+  let rel = {}
   const checkIfExistingBoard = key => {
     if (board) {
-      console.log("yes");
       const editedBoard = {
         _id: boards[board]._id,
         title: boardTitle
@@ -76,9 +75,16 @@ const BoardTitle = ({
 
   const handleSetEdit = () => {
     setBoardTitle(boards[board].title);
+    function outsideClick(e) {
+      if (e.clientX > (rel.x + rel.width) || e.clientY > (rel.y + rel.height) || (e.clientX < rel.x || e.clientY < rel.y)) {
+        console.log('outside of board')
+        checkIfExistingBoard("Escape")
+        document.removeEventListener('click', outsideClick)
+      }
+    }
+    document.addEventListener('click', outsideClick)
     setEdit(true);
   };
-
   if (edit) {
     return (
       <Container>
@@ -95,7 +101,11 @@ const BoardTitle = ({
     );
   } else {
     return (
-      <Container>
+      <Container ref={el => {
+        // check if el bc if element is gone, it will not exist.
+        if (!el) return
+        rel = el.getBoundingClientRect()
+      }}>
         <Link to={`/board/${boards[board]._id}`}>{boards[board].title}</Link>
         <EditButton onClick={() => handleSetEdit()}>...</EditButton>
       </Container>

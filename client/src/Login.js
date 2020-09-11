@@ -24,6 +24,7 @@ const Login = ({ setUserAccount }) => {
     })
     const [ error, setError ] = useState("")
     const { email, password } = accountInfo;
+
     const handleOnChange = e => {
         setAccountInfo({...accountInfo, [e.target.name]: e.target.value})
     }

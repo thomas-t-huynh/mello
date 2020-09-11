@@ -62,9 +62,9 @@ class Board extends React.Component {
     }
 
     onDragEnd = result => {
-        const { destination, destination: { droppableId }, source, draggableId } = result;
+        
+        const { destination, source, draggableId } = result;
         if (result.type === "column") {
-            console.log(result)
             if (!destination) {
                 return;
             }
@@ -74,19 +74,19 @@ class Board extends React.Component {
             ) {
                 return;
             }
-            const newColumnIds = this.props.boardData.boards[droppableId].columnIds
+            const newColumnIds = this.props.boardData.boards[destination.droppableId].columnIds
             newColumnIds.splice(source.index, 1)
             newColumnIds.splice(destination.index, 0, { columnId: draggableId })
 
             const newBoard = {
-                ...this.props.boardData.boards[droppableId],
+                ...this.props.boardData.boards[destination.droppableId],
                 columnIds: newColumnIds
             }
             const newState = {
                 ...this.props.boardData,
                 boards: {
                     ...this.props.boardData.boards,
-                    [droppableId]: newBoard
+                    [destination.droppableId]: newBoard
                 }
             }
             this.props.reorderColumns(newState, newBoard)
@@ -196,7 +196,6 @@ class Board extends React.Component {
                                         const columnTasks = column.taskIds.map(
                                             ({ taskId }, index) => tasks[taskId]
                                         );
-                                        // const isDropDisabled = index < this.state.homeIndex;
                                         return (
                                             <Column
                                                 key={column._id}

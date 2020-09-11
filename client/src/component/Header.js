@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 
 const Container = styled.div`
@@ -62,16 +62,16 @@ const LogoutButton = styled(Button)`
 
 
 const Header = ({ boards, token, removeAccount }) => {
-
+  const History = useHistory()
   const handleLogout = () => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": token
     };
-    axios.post('https://mello-backend.herokuapp.com/users/logoutAll', undefined, { headers })
+    axios.post(`${process.env.REACT_APP_API_URI}/users/logoutAll`, undefined, { headers })
     .then(res => {
-      console.log(res)
-      removeAccount();
+      History.push("/")
+      removeAccount()
       window.localStorage.removeItem("mello-user")
     })
     .catch(err => console.log(err))

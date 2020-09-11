@@ -69,7 +69,8 @@ const Icon = styled.img`
 
 export default class Task extends React.Component {
   state = {
-    edit: this.props.preTask
+    edit: this.props.preTask,
+    rel: React.createRef()
   };
 
   checkIfTaskExists = keyValue => {
@@ -87,6 +88,16 @@ export default class Task extends React.Component {
         value: this.props.task.content
       }
     };
+    const rel = this.state.rel.current.getBoundingClientRect()
+    console.log(rel)
+    const outsideClick = (e) => {
+      if (e.clientX > (rel.x + rel.width) || e.clientY > (rel.y + rel.height * 2) || (e.clientX < rel.x || e.clientY < rel.y)) {
+        this.props.setTaskDescription(originalDescription);
+        this.setState({ edit: false })
+        document.removeEventListener('click', outsideClick)
+      }
+    }
+    document.addEventListener('click', outsideClick)
     this.props.setTaskDescription(originalDescription);
     this.setState({ edit: true });
   };
@@ -112,19 +123,15 @@ export default class Task extends React.Component {
         <Draggable
           draggableId={this.props.task._id}
           index={this.props.index}
-          // isDragDisabled={isDragDisabled}
         >
           {(provided, snapshot) => (
             <Container
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
-              // provided={provided}
               isDragging={snapshot.isDragging}
-              // isDragDisabled={isDragDisabled}
             >
-              {/* <Handle {...provided.dragHandleProps} /> */}
-              <div>
+              <div ref={this.state.rel}>
                 <p>{this.props.task.content}</p>
                 <Icon
                   onClick={() => this.handleSetEdit()}

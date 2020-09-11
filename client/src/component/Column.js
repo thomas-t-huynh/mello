@@ -57,7 +57,8 @@ export default class Column extends React.Component {
   state = {
     edit: this.props.preColumn,
     preTask: false,
-    taskDescription: ""
+    taskDescription: "",
+    rel: React.createRef()
   };
 
   checkIfColumnExists = keyValue => {
@@ -76,6 +77,16 @@ export default class Column extends React.Component {
       }
     };
     this.props.setColumnTitle(originalTitle);
+    const rel = this.state.rel.current.getBoundingClientRect()
+    const outsideClick = (e) => {
+      if (e.clientX > (rel.x + rel.width) || e.clientY > (rel.y + rel.height) || (e.clientX < rel.x || e.clientY < rel.y)) {
+        console.log('outside of board')
+        this.props.setColumnTitle(originalTitle)
+        this.setState({ edit: false })
+        document.removeEventListener('click', outsideClick)
+      }
+    }
+    document.addEventListener('click', outsideClick)
     this.setState({ edit: true });
   };
 
@@ -166,7 +177,7 @@ export default class Column extends React.Component {
               {...provided.dragHandleProps}
               isDragging={snapshot.isDragging}
             >
-              <Title onClick={() => this.handleSetEdit()}>
+              <Title ref={this.state.rel} onClick={() => this.handleSetEdit()}>
                 {this.props.column.title}
               </Title>
               {this.renderTaskList()}

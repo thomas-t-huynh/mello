@@ -8,7 +8,7 @@ import Home from "./Home";
 import Header from "./component/Header";
 import Login from "./Login";
 import SignUp from "./SignUp";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 import axios from "axios";
 
 const Container = styled.div`
@@ -16,12 +16,15 @@ const Container = styled.div`
 `;
 
 class App extends React.Component {
-  state = {
-    ...initialData
+  constructor(props) {
+    super(props)
+    this.state = {
+      ...initialData
+    }
   }
 
+
   componentDidMount() {
-    console.log()
     const melloUser = window.localStorage.getItem("mello-user");
     if (melloUser) {
       const token = JSON.parse(melloUser);
@@ -32,7 +35,10 @@ class App extends React.Component {
       axios
         .get(`${process.env.REACT_APP_API_URI}/users/me`, { headers })
         .then(res => {
-          // window.history.go('/board')
+          const { history } = this.props
+          if (history.location.pathname === "/") {
+            history.push('/board')
+          }
           this.setUserAccount({ ...res.data, token });
         })
         .catch(err => console.log(err));
@@ -54,7 +60,7 @@ class App extends React.Component {
     };
     // console.log('fetching boards....')
     axios
-      .get(`https://mello-backend.herokuapp.com/boards`, {
+      .get(`${process.env.REACT_APP_API_URI}/boards`, {
         headers: headers
       })
       .then(res => {
@@ -76,7 +82,7 @@ class App extends React.Component {
         Authorization: this.state.account.token
       };
       axios
-        .get(`https://mello-backend.herokuapp.com/boards/${boardId}/columns`, {
+        .get(`${process.env.REACT_APP_API_URI}/boards/${boardId}/columns`, {
           headers: headers
         })
         .then(res => {
@@ -107,7 +113,7 @@ class App extends React.Component {
       Authorization: this.state.account.token
     };
     if (editedBoard) {
-      axios.patch(`https://mello-backend.herokuapp.com/boards`, { title: title, _id: editedBoard._id }, { headers })
+      axios.patch(`${process.env.REACT_APP_API_URI}/boards`, { title: title, _id: editedBoard._id }, { headers })
       .then(res => {
         let editedState = this.state;
         editedState.boards[editedBoard._id].title = editedBoard.title;
@@ -117,7 +123,7 @@ class App extends React.Component {
     } else {
       axios
         .post(
-          `https://mello-backend.herokuapp.com/boards`,
+          `${process.env.REACT_APP_API_URI}/boards`,
           { title: title },
           {
             headers: headers
@@ -132,9 +138,9 @@ class App extends React.Component {
             account: {
               ...this.state.account,
               user: {
-                ...this.state.account.user,
+                ...this.state.account,
                 boardIds: [
-                  ...this.state.account.user.boardIds,
+                  ...this.state.account.boardIds,
                   { boardId: _id }
                 ]
               }
@@ -167,7 +173,7 @@ class App extends React.Component {
         _id: columnId,
         title: columnTitle
       }
-      axios.patch(`https://mello-backend.herokuapp.com/boards/columns`, data, { headers })
+      axios.patch(`${process.env.REACT_APP_API_URI}/boards/columns`, data, { headers })
       .then(res => {
         // console.log(res)
       })
@@ -179,7 +185,7 @@ class App extends React.Component {
     }
     axios
       .post(
-        `https://mello-backend.herokuapp.com/boards/${boardId}/columns`,
+        `${process.env.REACT_APP_API_URI}/boards/${boardId}/columns`,
         { title: columnTitle },
         {
           headers: headers
@@ -212,7 +218,7 @@ class App extends React.Component {
         _id: taskId,
         content: taskDescription
       }
-      axios.patch(`https://mello-backend.herokuapp.com/boards/columns/tasks`, data, { headers })
+      axios.patch(`${process.env.REACT_APP_API_URI}/boards/columns/tasks`, data, { headers })
       .then(res => console.log(res))
       .catch(err => console.log(err))
       const editedState = this.state;
@@ -226,7 +232,7 @@ class App extends React.Component {
       boardId
     };
     axios
-      .post(`https://mello-backend.herokuapp.com/boards/columns/tasks`, data, {
+      .post(`${process.env.REACT_APP_API_URI}/boards/columns/tasks`, data, {
         headers: headers
       })
       .then(res => {
@@ -265,7 +271,7 @@ class App extends React.Component {
       Authorization: this.state.account.token
     };
     axios
-      .get(`https://mello-backend.herokuapp.com/boards/${boardId}/columns/tasks`, {
+      .get(`${process.env.REACT_APP_API_URI}/boards/${boardId}/columns/tasks`, {
         headers: headers
       })
       .then(res => {
@@ -294,7 +300,7 @@ class App extends React.Component {
     };
     if (!endColumn) {
       axios
-      .patch(`https://mello-backend.herokuapp.com/boards/columns`, startData, { headers: headers })
+      .patch(`${process.env.REACT_APP_API_URI}/boards/columns`, startData, { headers: headers })
       .then(res => {
       })
       .catch(err => console.log(err));
@@ -306,7 +312,7 @@ class App extends React.Component {
         taskIds: endColumn.taskIds
       }
       axios
-      .patch(`https://mello-backend.herokuapp.com/boards/columns`, { startData: startData, endData: endData }, { headers })
+      .patch(`${process.env.REACT_APP_API_URI}/boards/columns`, { startData: startData, endData: endData }, { headers })
       .then(res => { console.log(res)})
       .catch(err => console.log(err))
       this.setState(newState)
@@ -322,7 +328,7 @@ class App extends React.Component {
       columnIds: newBoard.columnIds,
       _id: newBoard._id
     }
-    axios.patch('https://mello-backend.herokuapp.com/boards', data, { headers })
+    axios.patch(`${process.env.REACT_APP_API_URI}/boards`, data, { headers })
     .then(res => {
       console.log(res)
     })
@@ -338,11 +344,15 @@ class App extends React.Component {
     this.setState({ columns: undefined, tasks: undefined });
   };
 
+  removeAccount = () => {
+    this.setState({...initialData})
+  }
+
   render() {
     console.log(`app.js: `, this.state);
     return (
-      <Router>
-        <Header boards={this.state.boards} token={this.state.account.token} removeAccount={() => this.setState({ ...initialData })} />
+      <>
+        <Header boards={this.state.boards} token={this.state.account.token} removeAccount={() => this.removeAccount()} />
         <Switch>
           <Route
             exact
@@ -377,9 +387,9 @@ class App extends React.Component {
             )}
           />
         </Switch>
-      </Router>
+      </>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
