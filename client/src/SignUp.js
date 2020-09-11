@@ -33,7 +33,7 @@ const SignUp = ({ setUserAccount }) => {
     const handleOnSubmit = e => {
         e.preventDefault()
         axios
-            .post(`http://localhost:3001/users`, { 
+            .post(`${process.env.REACT_APP_API_URI}/users`, { 
                 "name": name,
                 "email": email,
                 "password": password
