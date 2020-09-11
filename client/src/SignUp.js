@@ -33,7 +33,7 @@ const SignUp = ({ setUserAccount }) => {
     const handleOnSubmit = e => {
         e.preventDefault()
         axios
-            .post(`https://mello-backend.herokuapp.com/users`, { 
+            .post(`http://localhost:3001/users`, { 
                 "name": name,
                 "email": email,
                 "password": password
@@ -41,9 +41,12 @@ const SignUp = ({ setUserAccount }) => {
             .then((res) => {
                 window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
                 setUserAccount(res.data)
+                setError("")
                 History.push("/board")
             })
-            .catch((e) => console.log(e))
+            .catch((e) => {
+                if (e.response){ setError(e.response.data) }
+            })
     }
 
     return (

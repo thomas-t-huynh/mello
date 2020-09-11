@@ -27,11 +27,11 @@ const Login = ({ setUserAccount }) => {
     const handleOnChange = e => {
         setAccountInfo({...accountInfo, [e.target.name]: e.target.value})
     }
-// https://mello-backend.herokuapp.com/users/login
+
     const handleOnSubmit = e => {
         e.preventDefault()
         axios
-            .post(`http://localhost:3001/users/login`, { 
+            .post(`${process.env.REACT_APP_API_URI}/users/login`, { 
                 "email": email,
                 "password": password
              })
@@ -42,7 +42,6 @@ const Login = ({ setUserAccount }) => {
                 History.push("/board")
             })
             .catch((e) => {
-                console.log({...e})
                 if (e.response){ setError(e.response.data) }
             })
     }

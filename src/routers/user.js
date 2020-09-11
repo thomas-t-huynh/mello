@@ -6,14 +6,17 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 
 router.post('/users', async (req, res) => {
-    const user = new User(req.body);
-
     try {
+        for (let prop in req.body) {
+            if (!req.body[prop]) { return res.status(400).send(`${prop} is missing`)}
+        }
+        const user = new User(req.body)
         await user.save()
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
     } catch (e){
-        res.status(400).send(e)
+        console.log(e)
+        res.status(400).send(e.message)
     }
 })
 

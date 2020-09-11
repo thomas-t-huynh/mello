@@ -8,7 +8,7 @@ import Home from "./Home";
 import Header from "./component/Header";
 import Login from "./Login";
 import SignUp from "./SignUp";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
 const Container = styled.div`
@@ -18,9 +18,10 @@ const Container = styled.div`
 class App extends React.Component {
   state = {
     ...initialData
-  };
+  }
 
   componentDidMount() {
+    console.log()
     const melloUser = window.localStorage.getItem("mello-user");
     if (melloUser) {
       const token = JSON.parse(melloUser);
@@ -29,8 +30,9 @@ class App extends React.Component {
         Authorization: token
       };
       axios
-        .get(`https://mello-backend.herokuapp.com/users/me`, { headers })
+        .get(`${process.env.REACT_APP_API_URI}/users/me`, { headers })
         .then(res => {
+          // window.history.go('/board')
           this.setUserAccount({ ...res.data, token });
         })
         .catch(err => console.log(err));
