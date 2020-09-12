@@ -3,8 +3,6 @@ import "@atlaskit/css-reset";
 import styled from "styled-components";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
-import { useParams } from "react-router-dom";
-import axios from "axios";
 
 const Container = styled.div`
     display: flex;

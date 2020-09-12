@@ -1,19 +1,18 @@
 import React from "react";
+import axios from "axios";
+import { connect } from "react-redux";
 import "@atlaskit/css-reset";
 import "./styles.css";
+
 import initialData from "./init-data";
-import styled from "styled-components";
 import Board from "./component/Board";
 import Home from "./Home";
 import Header from "./component/Header";
 import Login from "./Login";
 import SignUp from "./SignUp";
-import { Switch, Route, withRouter } from "react-router-dom";
-import axios from "axios";
+import { Switch, Route } from "react-router-dom";
+import { loginUser } from "./actions/users"
 
-const Container = styled.div`
-  display: flex;
-`;
 
 class App extends React.Component {
   constructor(props) {
@@ -22,29 +21,28 @@ class App extends React.Component {
       ...initialData
     }
   }
-
-
   componentDidMount() {
     const melloUser = window.localStorage.getItem("mello-user");
     if (melloUser) {
       const token = JSON.parse(melloUser);
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: token
-      };
-      axios
-        .get(`${process.env.REACT_APP_API_URI}/users/me`, { headers })
-        .then(res => {
-          const { history } = this.props
-          if (history.location.pathname === "/") {
-            history.push('/board')
-          }
-          this.setUserAccount({ ...res.data, token });
-        })
-        .catch(err => console.log(err));
+      // const headers = {
+      //   "Content-Type": "application/json",
+      //   Authorization: token
+      // };
+      // axios
+      //   .get(`${process.env.REACT_APP_API_URI}/users/me`, { headers })
+      //   .then(res => {
+      //     const { history } = this.props
+      //     if (history.location.pathname === "/") {
+      //       history.push('/board')
+      //     }
+      //     this.setUserAccount({ ...res.data, token });
+      //   })
+      //   .catch(err => console.log(err));
+      this.props.loginUser(token)
     }
   }
-
+  
   componentDidUpdate(prevProps, prevState) {
     if (prevState.account !== this.state.account) {
       if (Object.keys(this.state.account).length > 0) {
@@ -58,7 +56,6 @@ class App extends React.Component {
       "Content-Type": "application/json",
       Authorization: this.state.account.token
     };
-    // console.log('fetching boards....')
     axios
       .get(`${process.env.REACT_APP_API_URI}/boards`, {
         headers: headers
@@ -74,6 +71,7 @@ class App extends React.Component {
       })
       .catch(err => console.log(err));
   };
+
   getColumns = boardId => {
     let columnIds = this.state.boards[boardId].columnIds;
     if (columnIds) {
@@ -349,7 +347,8 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(`app.js: `, this.state);
+    // console.log(`app.js: `, this.state);
+    console.log(this.props.account)
     return (
       <>
         <Header boards={this.state.boards} token={this.state.account.token} removeAccount={() => this.removeAccount()} />
@@ -392,4 +391,8 @@ class App extends React.Component {
   }
 }
 
-export default withRouter(App);
+const mapStateToProps = state => ({
+  account: state.users.account
+})
+
+export default connect(mapStateToProps, { loginUser })(App);

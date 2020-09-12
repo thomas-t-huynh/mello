@@ -1,2 +1,3 @@
-cd ../../../mongodb/mongodb/bin
-mongod.exe --dbpath="c:/users/thomas huynh/mello-data"
+c:
+cd "program files/mongodb/server/4.4/bin"
+mongod.exe --dbpath="c:/users/t_huy/data"

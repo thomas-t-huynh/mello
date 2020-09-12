@@ -40,7 +40,7 @@ const Home = ({ boardOrder, boards, addBoard, clearColumnsAndTasks }) => {
 
   useEffect(() => {
     clearColumnsAndTasks();
-  }, [])
+  }, [clearColumnsAndTasks])
 
   const handleAddBoard = (keyValue, editedBoard) => {
     if (keyValue === "Enter") {

@@ -23,8 +23,6 @@ const TaskList = styled.div`
   padding: 8px;
   transition: background-color 0.3s ease;
   background: #d9d9d9;
-  /* background-color: ${props =>
-    props.isDraggingOver ? "skyblue" : "#cccccc"}; */
 `;
 
 const TitleInput = styled.input`
@@ -80,7 +78,6 @@ export default class Column extends React.Component {
     const rel = this.state.rel.current.getBoundingClientRect()
     const outsideClick = (e) => {
       if (e.clientX > (rel.x + rel.width) || e.clientY > (rel.y + rel.height) || (e.clientX < rel.x || e.clientY < rel.y)) {
-        console.log('outside of board')
         this.props.setColumnTitle(originalTitle)
         this.setState({ edit: false })
         document.removeEventListener('click', outsideClick)

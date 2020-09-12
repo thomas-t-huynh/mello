@@ -83,13 +83,13 @@ const Header = ({ boards, token, removeAccount }) => {
       {boards && (
       <Link to="/board">
         <Button>
-          <img src={require("../images/home.png")} />
+          <img alt="home button" src={require("../images/home.png")} />
           Home
         </Button>
       </Link>
       )}
       <AppTitle>
-        <img src={require("../images/marshmallow.png")} />
+        <img alt="logout button" src={require("../images/marshmallow.png")} />
         <h1>Mello</h1>
       </AppTitle>
       {boards && (

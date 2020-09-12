@@ -9,12 +9,6 @@ const Container = styled.div`
   padding: 8px;
   margin-bottom: 8px;
   background: #f2f2f2;
-  /* background-color: ${props =>
-    props.isDragDisabled
-      ? "lightgray"
-      : props.isDragging
-      ? "lightgreen"
-      : "white"}; */
   display: flex;
   &:hover {
     background: #e6e6e6;
