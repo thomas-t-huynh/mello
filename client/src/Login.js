@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 
 import UserInfoForm from "./component/UserInfoForm";
+import { loginUser } from "./actions/users"
 
 const Container = styled.div`
     display: flex;
@@ -16,7 +18,7 @@ const Container = styled.div`
     }
 `
 
-const Login = ({ setUserAccount }) => {
+const Login = ({ setUserAccount, loginUser }) => {
     const History = useHistory()
     const [ accountInfo, setAccountInfo ] = useState({
         email: "",
@@ -31,20 +33,21 @@ const Login = ({ setUserAccount }) => {
 
     const handleOnSubmit = e => {
         e.preventDefault()
-        axios
-            .post(`${process.env.REACT_APP_API_URI}/users/login`, { 
-                "email": email,
-                "password": password
-             })
-            .then((res) => {
-                setUserAccount(res.data)
-                setError("")
-                window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
-                History.push("/board")
-            })
-            .catch((e) => {
-                if (e.response){ setError(e.response.data) }
-            })
+        // axios
+        //     .post(`${process.env.REACT_APP_API_URI}/users/login`, { 
+        //         "email": email,
+        //         "password": password
+        //      })
+        //     .then((res) => {
+        //         setUserAccount(res.data)
+        //         setError("")
+        //         window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
+        //         History.push("/board")
+        //     })
+        //     .catch((e) => {
+        //         if (e.response){ setError(e.response.data) }
+        //     })
+        loginUser(email, password, setError, History)
     }
 
     return (
@@ -55,4 +58,4 @@ const Login = ({ setUserAccount }) => {
     );
 };
 
-export default Login;
+export default connect(undefined, { loginUser })(Login);

@@ -11,7 +11,7 @@ import Header from "./component/Header";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import { Switch, Route } from "react-router-dom";
-import { loginUser } from "./actions/users"
+import { loginMe } from "./actions/users"
 
 
 class App extends React.Component {
@@ -32,20 +32,21 @@ class App extends React.Component {
       // axios
       //   .get(`${process.env.REACT_APP_API_URI}/users/me`, { headers })
       //   .then(res => {
-      //     const { history } = this.props
-      //     if (history.location.pathname === "/") {
-      //       history.push('/board')
-      //     }
+          // const { history } = this.props
+          // if (history.location.pathname === "/") {
+          //   history.push('/board')
+          // }
       //     this.setUserAccount({ ...res.data, token });
       //   })
       //   .catch(err => console.log(err));
-      this.props.loginUser(token)
+      const { history } = this.props
+      this.props.loginMe(token, history)
     }
   }
   
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.account !== this.state.account) {
-      if (Object.keys(this.state.account).length > 0) {
+    if (prevProps.account !== this.props.account) {
+      if (Object.keys(this.props.account).length > 0) {
         this.getBoards();
       }
     }
@@ -54,7 +55,7 @@ class App extends React.Component {
   getBoards = () => {
     const headers = {
       "Content-Type": "application/json",
-      Authorization: this.state.account.token
+      Authorization: this.props.account.token
     };
     axios
       .get(`${process.env.REACT_APP_API_URI}/boards`, {
@@ -77,7 +78,7 @@ class App extends React.Component {
     if (columnIds) {
       const headers = {
         "Content-Type": "application/json",
-        Authorization: this.state.account.token
+        Authorization: this.props.account.token
       };
       axios
         .get(`${process.env.REACT_APP_API_URI}/boards/${boardId}/columns`, {
@@ -108,7 +109,7 @@ class App extends React.Component {
   addBoard = (title, editedBoard = undefined) => {
     const headers = {
       "Content-Type": "application/json",
-      Authorization: this.state.account.token
+      Authorization: this.props.account.token
     };
     if (editedBoard) {
       axios.patch(`${process.env.REACT_APP_API_URI}/boards`, { title: title, _id: editedBoard._id }, { headers })
@@ -164,7 +165,7 @@ class App extends React.Component {
   addColumn = (boardId, columnTitle, columnId = undefined) => {
     const headers = {
       "Content-Type": "application/json",
-      Authorization: this.state.account.token
+      Authorization: this.props.account.token
     };
     if (columnId) {
       const data = {
@@ -209,7 +210,7 @@ class App extends React.Component {
   addTask = (boardId, columnId, taskDescription, taskId = undefined) => {
     const headers = {
       "Content-Type": "application/json",
-      Authorization: this.state.account.token
+      Authorization: this.props.account.token
     };
     if (taskId) {
       const data = {
@@ -266,7 +267,7 @@ class App extends React.Component {
   getTasks = boardId => {
     const headers = {
       "Content-Type": "application/json",
-      Authorization: this.state.account.token
+      Authorization: this.props.account.token
     };
     axios
       .get(`${process.env.REACT_APP_API_URI}/boards/${boardId}/columns/tasks`, {
@@ -289,7 +290,7 @@ class App extends React.Component {
   reorderTasks = (newState, startColumn, endColumn=undefined) => {
     const headers = {
       "Content-Type": "application/json",
-      Authorization: this.state.account.token
+      Authorization: this.props.account.token
     };
     const startData = {
       _id: startColumn._id,
@@ -320,7 +321,7 @@ class App extends React.Component {
   reorderColumns = (newState, newBoard) => {
     const headers = {
       "Content-Type": "application/json",
-      Authorization: this.state.account.token
+      Authorization: this.props.account.token
     };
     const data = {
       columnIds: newBoard.columnIds,
@@ -351,7 +352,7 @@ class App extends React.Component {
     console.log(this.props.account)
     return (
       <>
-        <Header boards={this.state.boards} token={this.state.account.token} removeAccount={() => this.removeAccount()} />
+        <Header boards={this.state.boards} token={this.props.account.token} removeAccount={() => this.removeAccount()} />
         <Switch>
           <Route
             exact
@@ -392,7 +393,8 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  account: state.users.account
+  account: state.users.account,
+  headers: state.users.headers,
 })
 
-export default connect(mapStateToProps, { loginUser })(App);
+export default connect(mapStateToProps, { loginMe })(App);
