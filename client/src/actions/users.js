@@ -19,7 +19,8 @@ export const loginUser = (email, password, setError, history) => dispatch => {
         "password": password
      })
     .then((res) => {
-        dispatch(setUser(res.data))
+        console.log('actions/users.js',{...res.data.user})
+        dispatch(setUser({...res.data.user, token: res.data.token }))
         setError("")
         window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
         history.push("/board")
@@ -41,7 +42,7 @@ export const loginMe = (token, history) => {
             if (history.location.pathname === "/") {
                 history.push('/board')
             }
-            // console.log('loginMe', res.data)
+            console.log(res.data)
             dispatch(setUser({ ...res.data, token }))
         })
         .catch(err => console.log(err));
@@ -68,7 +69,7 @@ export const signUpUser = (
         )
         .then((res) => {
             window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
-            dispatch(setUser(res.data))
+            dispatch(setUser({...res.data.user, token: res.data.token }))
             setError("")
             history.push("/board")
         })

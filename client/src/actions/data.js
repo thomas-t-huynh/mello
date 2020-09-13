@@ -50,6 +50,7 @@ export const addBoard = (title, editedBoard) => (dispatch, getState) => {
       const newBoardOrder = [...data.boardOrder, _id];
 
       const updatedAccount = {...account}
+      console.log(updatedAccount)
       updatedAccount.boardIds = [...updatedAccount.boardIds, { boardId: _id }]
 
       const updatedBoards = { boards: {...data.boards}, boardOrder: newBoardOrder }
