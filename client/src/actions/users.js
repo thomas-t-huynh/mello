@@ -59,3 +59,20 @@ export const logoutUser = (history) => (dispatch, getState) => {
     .catch(err => console.log(err))
 }
 
+export const signUpUser = (
+    { name, email, password }, history, setError
+) => dispatch => {
+    axios
+        .post(`${process.env.REACT_APP_API_URI}/users`,
+            {  name, email, password }
+        )
+        .then((res) => {
+            window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
+            dispatch(setUser(res.data))
+            setError("")
+            history.push("/board")
+        })
+        .catch((e) => {
+            if (e.response){ setError(e.response.data) }
+        })
+}

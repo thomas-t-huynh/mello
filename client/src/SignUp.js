@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
+import { connect } from "react-redux";
+
+import { signUpUser } from "./actions/users"
 import UserInfoForm from "./component/UserInfoForm";
 
 const Container = styled.div`
@@ -15,46 +18,47 @@ const Container = styled.div`
     }
 `
 
-
-const SignUp = ({ setUserAccount }) => {
+const SignUp = ({ signUpUser }) => {
     const [ accountInfo, setAccountInfo ] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        "confirm password": ""
     })
     const History = useHistory();
     const [ error, setError ] = useState("")
 
-    const { name, email, password } = accountInfo;
     const handleOnChange = e => {
         setAccountInfo({...accountInfo, [e.target.name]: e.target.value})
     }
 
     const handleOnSubmit = e => {
         e.preventDefault()
-        axios
-            .post(`${process.env.REACT_APP_API_URI}/users`, { 
-                "name": name,
-                "email": email,
-                "password": password
-             })
-            .then((res) => {
-                window.localStorage.setItem("mello-user", JSON.stringify(res.data.token))
-                setUserAccount(res.data)
-                setError("")
-                History.push("/board")
-            })
-            .catch((e) => {
-                if (e.response){ setError(e.response.data) }
-            })
+        if (accountInfo.password !== accountInfo["confirm password"]) {
+            setError("Password entries do not match")
+            return
+        }
+        signUpUser(accountInfo, History, setError)
     }
 
     return (
         <Container>
-            <UserInfoForm header={"Signup"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} fields={['name', 'email', 'password']} error={error} accountInfo={accountInfo} />
+            <UserInfoForm 
+                header={"Signup"} 
+                handleOnSubmit={handleOnSubmit} 
+                handleOnChange={handleOnChange} 
+                fields={[
+                    ['name', 'name'], 
+                    ['email','email'], 
+                    ['password','password'], 
+                    ['confirm password', 'password']
+                ]}
+                error={error} 
+                accountInfo={accountInfo}
+            />
             <Link to="/">Want to login instead? Click here.</Link>
         </Container>
     );
 };
 
-export default SignUp;
+export default connect(undefined, { signUpUser })(SignUp);

@@ -23,9 +23,11 @@ const Container = styled.div`
       display: flex;
       justify-content: space-between;
       width: 250px;
+      align-items: center;
     }
     input {
       border-radius: 5px;
+      max-height: 15px;
     } 
     button {
       margin: 20px 0;
@@ -62,14 +64,14 @@ const UserInfoForm = ({
       <form onSubmit={e => handleOnSubmit(e)}>
         <h2>{header}</h2>
         <ErrorMessage>{error}</ErrorMessage>
-        {fields.map((field, i) => (
+        {fields.map(([fieldName, fieldType], i) => (
           <label key={i}>
-            {field.charAt(0).toUpperCase() + field.slice(1)}:
+            {fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}:
             <input
-              type={field === "password" ? "password" : "text"}
-              placeholder={field}
-              value={accountInfo[field]}
-              name={field}
+              type={fieldType}
+              placeholder={fieldName}
+              value={accountInfo[fieldName]}
+              name={fieldName}
               onChange={e => handleOnChange(e)}
             />
           </label>
