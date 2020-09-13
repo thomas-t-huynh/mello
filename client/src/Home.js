@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
+
+import { addBoard } from "./actions/data"
 import BoardTitle from "./component/BoardTitle";
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   padding-top: 45px;
+  flex-wrap: wrap;
 `;
-
 
 const LoadingImg = styled.img`
     margin: 50px auto;
@@ -79,4 +82,4 @@ const Home = ({ boardOrder, boards, addBoard, clearColumnsAndTasks }) => {
   );
 };
 
-export default Home;
+export default connect(undefined, { addBoard })(Home);

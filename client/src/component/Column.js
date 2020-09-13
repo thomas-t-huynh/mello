@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-// import { connect } from "react-redux";
+import { connect } from "react-redux";
 
-
+import { addTask } from "../actions/data"
 import Task from "./Task";
 
 const Container = styled.div`
@@ -54,7 +54,7 @@ const Button = styled.button`
   }
 `;
 
-export default class Column extends React.Component {
+class Column extends React.Component {
   state = {
     edit: this.props.preColumn,
     preTask: false,
@@ -188,3 +188,5 @@ export default class Column extends React.Component {
     }
   }
 }
+
+export default connect(undefined, { addTask })(Column)

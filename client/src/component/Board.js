@@ -4,7 +4,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { connect } from "react-redux"
 import "@atlaskit/css-reset";
 
-import { getColumns, getTasks } from "../actions/data"
+import { getColumns, getTasks, addColumn } from "../actions/data"
 import Column from "./Column";
 
 const Container = styled.div`
@@ -184,7 +184,6 @@ class Board extends React.Component {
     render() {
         const boardId = this.props.match.params.boardId;
         const { boards, columns, tasks } = this.props.boardData;
-        console.log(boards, columns, tasks)
         if (columns) {
             return (
                 <DragDropContext
@@ -210,7 +209,6 @@ class Board extends React.Component {
                                                 index={index}
                                                 column={column}
                                                 tasks={columnTasks}
-                                                addTask={this.props.addTask}
                                                 columnTitle={this.state.columnTitle}
                                                 setColumnTitle={this.setColumnTitle}
                                                 handleAddColumn={this.handleAddColumn}
@@ -244,4 +242,4 @@ class Board extends React.Component {
     }
 }
 
-export default connect(undefined, { getColumns, getTasks })(Board);
+export default connect(undefined, { getColumns, getTasks, addColumn })(Board);

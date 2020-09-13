@@ -1,4 +1,4 @@
-import { SET_BOARDS, SET_COLUMNS, SET_TASKS } from "../actions/data"
+import { SET_DATA } from "../actions/data"
 
 const initialState = {
     tasks: undefined,
@@ -9,20 +9,10 @@ const initialState = {
 
 const reducer = (state=initialState, action) => {
     switch(action.type) {
-        case SET_BOARDS:
+        case SET_DATA:
             return {
                 ...state,
                 ...action.payload
-            }
-        case SET_COLUMNS:
-            return {
-                ...state,
-                columns: action.payload
-            }
-        case SET_TASKS:
-            return {
-                ...state,
-                tasks: action.payload
             }
         default:
             return state

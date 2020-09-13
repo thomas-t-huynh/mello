@@ -41,6 +41,7 @@ export const loginMe = (token, history) => {
             if (history.location.pathname === "/") {
                 history.push('/board')
             }
+            // console.log('loginMe', res.data)
             dispatch(setUser({ ...res.data, token }))
         })
         .catch(err => console.log(err));
