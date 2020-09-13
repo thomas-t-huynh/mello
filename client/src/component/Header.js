@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
-import axios from "axios";
+import { connect } from "react-redux";
+
+import { logoutUser } from "../actions/users"
 
 const Container = styled.div`
   background: black;
@@ -61,26 +63,16 @@ const LogoutButton = styled(Button)`
 `;
 
 
-const Header = ({ boards, token, removeAccount }) => {
+const Header = ({ account, logoutUser }) => {
   const History = useHistory()
   const handleLogout = () => {
-    const headers = {
-      "Content-Type": "application/json",
-      "Authorization": token
-    };
-    axios.post(`${process.env.REACT_APP_API_URI}/users/logoutAll`, undefined, { headers })
-    .then(res => {
-      History.push("/")
-      removeAccount()
-      window.localStorage.removeItem("mello-user")
-    })
-    .catch(err => console.log(err))
+    logoutUser(History)
   }
 
 
   return (
     <Container>
-      {boards && (
+      {account && (
       <Link to="/board">
         <Button>
           <img alt="home button" src={require("../images/home.png")} />
@@ -92,7 +84,7 @@ const Header = ({ boards, token, removeAccount }) => {
         <img alt="logout button" src={require("../images/marshmallow.png")} />
         <h1>Mello</h1>
       </AppTitle>
-      {boards && (
+      {account && (
         <Link to="/" onClick={() => handleLogout()}>
           <LogoutButton>Logout</LogoutButton>
         </Link>
@@ -101,4 +93,4 @@ const Header = ({ boards, token, removeAccount }) => {
   );
 };
 
-export default Header;
+export default connect(undefined, { logoutUser })(Header);

@@ -1,4 +1,4 @@
-import { SET_USER } from "../actions/users";
+import { SET_USER, REMOVE_USER } from "../actions/users";
 
 const initialState = {
     account: {},
@@ -8,10 +8,18 @@ const initialState = {
 const reducer = (state=initialState, action) => {
     switch(action.type) {
         case SET_USER:
-            return {account: action.payload, headers: {
-                "Content-Type": "application/json",
-                Authorization: action.payload.token
-            }}
+            return {
+                account: action.payload, 
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: action.payload.token
+                }
+            }
+        case REMOVE_USER:
+            return {
+                account: {},
+                headers: {}
+            }
         default:
             return state
     }

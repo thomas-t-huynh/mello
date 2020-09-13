@@ -6,11 +6,12 @@ import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 
 import usersReducer from "./reducers/users";
+import dataReducer from "./reducers/data"
 import App from "./App";
 
 const rootElement = document.getElementById("root");
 
-const rootReducer = combineReducers({users: usersReducer})
+const rootReducer = combineReducers({users: usersReducer, data: dataReducer})
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk))
 

@@ -1,7 +1,10 @@
 import React from "react";
-import "@atlaskit/css-reset";
 import styled from "styled-components";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { connect } from "react-redux"
+import "@atlaskit/css-reset";
+
+import { getColumns, getTasks } from "../actions/data"
 import Column from "./Column";
 
 const Container = styled.div`
@@ -45,17 +48,23 @@ class Board extends React.Component {
         };
     }
 
+    // initialize columns on initial board entry
     componentDidMount() {
         const boardId = this.props.match.params.boardId;
         if (this.props.boardData.boards) {
-            this.props.getColumns(boardId);
+            this.props.getColumns(boardId)
+            this.props.getTasks(boardId)
+            // this.props.getColumnsOld(boardId);
         }
     }
     
+    // initialize columns on board change or refresh
     componentDidUpdate(prevProps) {
         const boardId = this.props.match.params.boardId;
         if (prevProps.boardData.boards !== this.props.boardData.boards) {
-          this.props.getColumns(boardId);
+            this.props.getColumns(boardId)
+            this.props.getTasks(boardId)
+            // this.props.getColumnsOld(boardId);
         }
     }
 
@@ -175,6 +184,7 @@ class Board extends React.Component {
     render() {
         const boardId = this.props.match.params.boardId;
         const { boards, columns, tasks } = this.props.boardData;
+        console.log(boards, columns, tasks)
         if (columns) {
             return (
                 <DragDropContext
@@ -234,4 +244,4 @@ class Board extends React.Component {
     }
 }
 
-export default Board;
+export default connect(undefined, { getColumns, getTasks })(Board);

@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import Task from "./Task";
 import { Droppable, Draggable } from "react-beautiful-dnd";
+// import { connect } from "react-redux";
+
+
+import Task from "./Task";
 
 const Container = styled.div`
   margin: 8px;

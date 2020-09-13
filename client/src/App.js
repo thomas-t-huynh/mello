@@ -12,7 +12,7 @@ import Login from "./Login";
 import SignUp from "./SignUp";
 import { Switch, Route } from "react-router-dom";
 import { loginMe } from "./actions/users"
-
+import { getBoards } from "./actions/data"
 
 class App extends React.Component {
   constructor(props) {
@@ -25,20 +25,6 @@ class App extends React.Component {
     const melloUser = window.localStorage.getItem("mello-user");
     if (melloUser) {
       const token = JSON.parse(melloUser);
-      // const headers = {
-      //   "Content-Type": "application/json",
-      //   Authorization: token
-      // };
-      // axios
-      //   .get(`${process.env.REACT_APP_API_URI}/users/me`, { headers })
-      //   .then(res => {
-          // const { history } = this.props
-          // if (history.location.pathname === "/") {
-          //   history.push('/board')
-          // }
-      //     this.setUserAccount({ ...res.data, token });
-      //   })
-      //   .catch(err => console.log(err));
       const { history } = this.props
       this.props.loginMe(token, history)
     }
@@ -47,7 +33,8 @@ class App extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.account !== this.props.account) {
       if (Object.keys(this.props.account).length > 0) {
-        this.getBoards();
+        this.props.getBoards()
+        // this.getBoards();
       }
     }
   }
@@ -217,9 +204,10 @@ class App extends React.Component {
         _id: taskId,
         content: taskDescription
       }
-      axios.patch(`${process.env.REACT_APP_API_URI}/boards/columns/tasks`, data, { headers })
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
+      axios
+        .patch(`${process.env.REACT_APP_API_URI}/boards/columns/tasks`, data, { headers })
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
       const editedState = this.state;
       editedState.tasks[taskId].content = taskDescription;
       this.setState(editedState);
@@ -335,39 +323,33 @@ class App extends React.Component {
     this.setState(newState);
   }
 
-  setUserAccount = accountInfo => {
-    this.setState({ account: accountInfo });
-  };
-
   clearColumnsAndTasks = () => {
     this.setState({ columns: undefined, tasks: undefined });
   };
 
-  removeAccount = () => {
-    this.setState({...initialData})
-  }
-
   render() {
     // console.log(`app.js: `, this.state);
-    console.log(this.props.account)
+    // console.log(this.props.account)
+    console.log(this.props.data)
+    const ifAccount = Object.keys(this.props.account).length > 0
     return (
       <>
-        <Header boards={this.state.boards} token={this.props.account.token} removeAccount={() => this.removeAccount()} />
+        <Header account={ifAccount} />
         <Switch>
           <Route
             exact
             path="/"
-            render={props => <Login setUserAccount={this.setUserAccount} />}
+            component={Login}
           />
           <Route
             path="/signup"
-            render={props => <SignUp setUserAccount={this.setUserAccount} />}
+            component={SignUp}
           />
           <Route exact path="/board">
             <Home
               addBoard={this.addBoard}
-              boards={this.state.boards}
-              boardOrder={this.state.boardOrder}
+              boards={this.props.boards}
+              boardOrder={this.props.boardOrder}
               clearColumnsAndTasks={this.clearColumnsAndTasks}
             />
           </Route>
@@ -377,11 +359,11 @@ class App extends React.Component {
               <Board
                 reorderColumns={this.reorderColumns}
                 reorderTasks={this.reorderTasks}
-                boardData={this.state}
+                boardData={this.props}
                 addColumn={this.addColumn}
                 addTask={this.addTask}
                 token={this.state.account.token}
-                getColumns={this.getColumns}
+                getColumnsOld={this.getColumns}
                 {...props}
               />
             )}
@@ -395,6 +377,11 @@ class App extends React.Component {
 const mapStateToProps = state => ({
   account: state.users.account,
   headers: state.users.headers,
+  ...state.data,
+  data: state.data
 })
 
-export default connect(mapStateToProps, { loginMe })(App);
+export default connect(mapStateToProps, { 
+  loginMe,
+  getBoards
+})(App);
