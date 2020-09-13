@@ -37,7 +37,14 @@ const Login = ({ loginUser }) => {
 
     return (
         <Container>
-            <UserInfoForm  header={"Login"} handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} fields={['email', 'password']} error={error} accountInfo={accountInfo} />
+            <UserInfoForm  
+                header={"Login"} 
+                handleOnSubmit={handleOnSubmit} 
+                handleOnChange={handleOnChange} 
+                fields={[['email','email'], ['password','password']]} 
+                error={error} 
+                accountInfo={accountInfo} 
+            />
             <Link to="/signup">Didn't sign up yet? Click here</Link>
         </Container>
     );
