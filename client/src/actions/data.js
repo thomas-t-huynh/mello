@@ -39,26 +39,26 @@ export const addBoard = (title, editedBoard) => (dispatch, getState) => {
     )
   }
   result
-  .then(res => {
-    if (editedBoard) {
-      const updatedBoards = { boards: {...data.boards} }
-      updatedBoards.boards[editedBoard._id].title = editedBoard.title
+    .then(res => {
+      if (editedBoard) {
+        const updatedBoards = { boards: {...data.boards} }
+        updatedBoards.boards[editedBoard._id].title = editedBoard.title
+        dispatch(setData(updatedBoards))
+        return
+      }
+      const { _id, owner, userIds } = res.data.board;
+      const newBoardOrder = [...data.boardOrder, _id];
+
+      const updatedAccount = {...account}
+      updatedAccount.boardIds = [...updatedAccount.boardIds, { boardId: _id }]
+
+      const updatedBoards = { boards: {...data.boards}, boardOrder: newBoardOrder }
+      updatedBoards.boards[_id] = { _id, title, owner, userIds, columnIds: [] }
+
       dispatch(setData(updatedBoards))
-      return
-    }
-    const { _id, owner, userIds } = res.data.board;
-    const newBoardOrder = [...data.boardOrder, _id];
-
-    const updatedAccount = {...account}
-    updatedAccount.boardIds = [...updatedAccount.boardIds, { boardId: _id }]
-
-    const updatedBoards = { boards: {...data.boards}, boardOrder: newBoardOrder }
-    updatedBoards.boards[_id] = { _id, title, owner, userIds, columnIds: [] }
-
-    dispatch(setData(updatedBoards))
-    dispatch(setUser(updatedAccount))
-  })
-  .catch(err => console.log(err));
+      dispatch(setUser(updatedAccount))
+    })
+    .catch(err => console.log(err));
 }
 
 export const getColumns = boardId => (dispatch, getState) => {
@@ -113,6 +113,19 @@ export const addColumn = (
     .catch(err => console.log(err));
 }
 
+export const reorderColumns = ({ boards }, updatedBoard) => (dispatch, getState) => {
+  const { headers } = getState().users
+  axios.patch(`${process.env.REACT_APP_API_URI}/boards`,
+    {
+      columnIds: updatedBoard.columnIds,
+      _id: updatedBoard._id
+    },
+    { headers }
+  )
+  .catch(err => console.log(err))
+  dispatch(setData({ boards }))
+}
+
 export const getTasks = boardId => (dispatch, getState) => {
     const { headers } = getState().users
     axios
@@ -165,4 +178,31 @@ export const addTask = (
       dispatch(setData({ tasks, columns }))
     })
     .catch(err => console.log(err));
+}
+
+export const reorderTasks = ({ columns }, startColumn, endColumn=undefined) => (dispatch, getState) => {
+  const { headers } = getState().users
+  const startData = {
+    _id: startColumn._id,
+    title: startColumn.title,
+    taskIds: startColumn.taskIds
+  };
+  if (!endColumn) {
+    axios
+      .patch(`${process.env.REACT_APP_API_URI}/boards/columns`, startData, { headers: headers })
+      .catch(err => console.log(err));
+  } else {
+    const endData = {
+      _id: endColumn._id,
+      title: endColumn.title,
+      taskIds: endColumn.taskIds
+    }
+    axios
+      .patch(`${process.env.REACT_APP_API_URI}/boards/columns`,
+        { startData, endData },
+        { headers }
+      )
+      .catch(err => console.log(err))
+  }
+  dispatch(setData({ columns }))
 }

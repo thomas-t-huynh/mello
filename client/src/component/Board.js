@@ -4,7 +4,13 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { connect } from "react-redux"
 import "@atlaskit/css-reset";
 
-import { getColumns, getTasks, addColumn } from "../actions/data"
+import { 
+    getColumns, 
+    getTasks, 
+    addColumn, 
+    reorderColumns,
+    reorderTasks
+} from "../actions/data"
 import Column from "./Column";
 
 const Container = styled.div`
@@ -69,7 +75,6 @@ class Board extends React.Component {
     }
 
     onDragEnd = result => {
-        
         const { destination, source, draggableId } = result;
         if (result.type === "column") {
             if (!destination) {
@@ -85,18 +90,18 @@ class Board extends React.Component {
             newColumnIds.splice(source.index, 1)
             newColumnIds.splice(destination.index, 0, { columnId: draggableId })
 
-            const newBoard = {
+            const updatedBoard = {
                 ...this.props.boardData.boards[destination.droppableId],
                 columnIds: newColumnIds
             }
-            const newState = {
+            const updatedData = {
                 ...this.props.boardData,
                 boards: {
                     ...this.props.boardData.boards,
-                    [destination.droppableId]: newBoard
+                    [destination.droppableId]: updatedBoard
                 }
             }
-            this.props.reorderColumns(newState, newBoard)
+            this.props.reorderColumns(updatedData, updatedBoard)
             return
         } 
         const { columns } = this.props.boardData;
@@ -121,46 +126,46 @@ class Board extends React.Component {
             newTaskIds.splice(source.index, 1);
             newTaskIds.splice(destination.index, 0, {taskId: draggableId});
 
-            const newColumn = {
+            const updatedColumn = {
                 ...start,
                 taskIds: newTaskIds
             };
 
-            const newState = {
+            const updatedData = {
                 ...this.props.boardData,
                 columns: {
                     ...this.props.boardData.columns,
-                    [newColumn._id]: newColumn
+                    [updatedColumn._id]: updatedColumn
                 }
             };
-            this.props.reorderTasks(newState, newColumn);
+            this.props.reorderTasks(updatedData, updatedColumn);
             return;
         }
 
         // Moving from one list to another
         const startTaskIds = Array.from(start.taskIds);
         startTaskIds.splice(source.index, 1);
-        const newStart = {
+        const startColumn = {
             ...start,
             taskIds: startTaskIds
         };
 
         const finishTaskIds = Array.from(finish.taskIds);
         finishTaskIds.splice(destination.index, 0, {taskId: draggableId});
-        const newFinish = {
+        const endColumn = {
             ...finish,
             taskIds: finishTaskIds
         };
 
-        const newState = {
+        const updatedData = {
             ...this.props.boardData,
             columns: {
                 ...this.props.boardData.columns,
-                [newStart._id]: newStart,
-                [newFinish._id]: newFinish
+                [startColumn._id]: startColumn,
+                [endColumn._id]: endColumn
             }
         };
-        this.props.reorderTasks(newState, newStart, newFinish);
+        this.props.reorderTasks(updatedData, startColumn, endColumn);
     };
 
     setColumnTitle = e => {
@@ -213,7 +218,6 @@ class Board extends React.Component {
                                                 setColumnTitle={this.setColumnTitle}
                                                 handleAddColumn={this.handleAddColumn}
                                                 boardId={boardId}
-                                                // isDropDisabled={isDropDisabled}
                                             />
                                         );
                                     })}
@@ -242,4 +246,10 @@ class Board extends React.Component {
     }
 }
 
-export default connect(undefined, { getColumns, getTasks, addColumn })(Board);
+export default connect(undefined, { 
+    getColumns, 
+    getTasks, 
+    addColumn, 
+    reorderColumns,
+    reorderTasks
+})(Board);
