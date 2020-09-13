@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import Task from "./Task";
 import { Droppable, Draggable } from "react-beautiful-dnd";
+import { connect } from "react-redux";
+
+import { addTask } from "../actions/data"
+import Task from "./Task";
 
 const Container = styled.div`
   margin: 8px;
@@ -23,8 +26,6 @@ const TaskList = styled.div`
   padding: 8px;
   transition: background-color 0.3s ease;
   background: #d9d9d9;
-  /* background-color: ${props =>
-    props.isDraggingOver ? "skyblue" : "#cccccc"}; */
 `;
 
 const TitleInput = styled.input`
@@ -53,7 +54,7 @@ const Button = styled.button`
   }
 `;
 
-export default class Column extends React.Component {
+class Column extends React.Component {
   state = {
     edit: this.props.preColumn,
     preTask: false,
@@ -80,7 +81,6 @@ export default class Column extends React.Component {
     const rel = this.state.rel.current.getBoundingClientRect()
     const outsideClick = (e) => {
       if (e.clientX > (rel.x + rel.width) || e.clientY > (rel.y + rel.height) || (e.clientX < rel.x || e.clientY < rel.y)) {
-        console.log('outside of board')
         this.props.setColumnTitle(originalTitle)
         this.setState({ edit: false })
         document.removeEventListener('click', outsideClick)
@@ -188,3 +188,5 @@ export default class Column extends React.Component {
     }
   }
 }
+
+export default connect(undefined, { addTask })(Column)

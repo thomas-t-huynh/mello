@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "env-cmd ./config/dev.env nodemon src/index.js"
+    "dev": "env-cmd ./config/dev.env nodemon src/index.js",
+    "db": "md mongo-db & \"C:/Program Files/MongoDb/Server/4.4/bin/mongod.exe\" --dbpath C:/Users/t_huy/data"
   },
   "author": "Thomas Huynh",
   "license": "MIT",
