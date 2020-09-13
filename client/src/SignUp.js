@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
 import { connect } from "react-redux";
 

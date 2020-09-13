@@ -97,7 +97,6 @@ export default class Task extends React.Component {
   };
 
   render() {
-    // const isDragDisabled = this.props.task.id === "task-1";
     if (this.state.edit) {
       return (
         <Container>
